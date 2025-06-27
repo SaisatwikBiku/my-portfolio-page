@@ -82,6 +82,12 @@ body {
     font-size: 24px;
     margin-bottom: 20px;
 }
+
+.home-content h3 span {
+    color: #007bff;
+    font-weight: 600;
+}
+
 .home-content p {
     font-size: 18px;
     line-height: 1.6;
