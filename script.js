@@ -35,3 +35,22 @@ document.querySelectorAll('.logo').forEach(link => {
     });
 });
 
+// EmailJS contact form handler
+document.addEventListener('DOMContentLoaded', function() {
+    emailjs.init('j_PeRhatSYVxAj1Gw'); 
+
+    const form = document.getElementById('contact-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            emailjs.sendForm('service_a0t4i5e', 'template_gb64xgq', form)
+                .then(function() {
+                    form.reset();
+                    form.innerHTML = "<p style='color:#007bff;font-size:1.2em;'>Thank you for your message!</p>";
+                }, function(error) {
+                    form.innerHTML = "<p style='color:red;'>Oops! There was a problem. Please try again.</p>";
+                });
+        });
+    }
+});
+
