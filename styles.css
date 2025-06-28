@@ -260,3 +260,75 @@ body {
     text-align: center;
 }
 
+.projects {
+    background: #007bff;
+    color: #fff;
+    padding: 80px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.projects h2 {
+    font-size: 40px;
+    margin-bottom: 40px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.projects-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+.project {
+    background: #fff;
+    color: #141313;
+    border-radius: 12px;
+    padding: 32px 28px 24px 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 220px;
+    max-width: 300px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #2b2a2a; 
+}
+
+.project p {
+    font-size: 16px;
+    margin-bottom: 18px;
+    color: #181818;
+}
+
+.project a {
+    display: inline-block;
+    padding: 8px 18px;
+    color: #fff;
+    background: #007bff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+
+.project a:hover {
+    background: #0056b3;
+    color: #fff;
+}
+
