@@ -11,7 +11,7 @@ This project is currently a work in progress. Features and content are being add
 To run the project locally:
 
 ```bash
-git clone https://github.com/your-username/my-portfolio-page.git
+git clone https://github.com/SaisatwikBiku/my-portfolio-page.git
 cd my-portfolio-page
 ```
 
