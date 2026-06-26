@@ -1,20 +1,48 @@
-# My Portfolio Page
+# Sai Satwik Bikumandla — Portfolio
 
-Welcome to my portfolio project! This repository contains the source code for my personal portfolio website.
+Personal portfolio website built with **React** and **Vite**. Showcases my background,
+skills, experience, and projects as a software engineer.
 
-## 🚧 Work in Progress
+🔗 **Live sections:** Home · About · Skills · Experience · Projects · Education · Contact
 
-This project is currently a work in progress. Features and content are being added and improved regularly.
+## Tech Stack
+
+- **React 18** — component-based UI
+- **Vite** — dev server & build tooling
+- **Vanilla CSS** — custom design system with CSS variables (no UI framework)
+- **@emailjs/browser** — contact form delivery
 
 ## Getting Started
 
-To run the project locally:
-
 ```bash
-git clone https://github.com/SaisatwikBiku/my-portfolio-page.git
-cd my-portfolio-page
+# Install dependencies
+npm install
+
+# Start the dev server (http://localhost:5173)
+npm run dev
+
+# Build for production (outputs to dist/)
+npm run build
+
+# Preview the production build
+npm run preview
 ```
 
+## Project Structure
+
+```
+public/                 Static assets (images, résumé PDF)
+src/
+  components/           Section components (Home, About, Skills, …)
+  data/portfolio.js     Single source of truth for all content
+  hooks/                useReveal (scroll animations), useTyped (typing effect)
+  styles/index.css      Global design system & styles
+  App.jsx               Page composition
+  main.jsx              Entry point
+```
+
+To update content (projects, experience, skills, links), edit
+[`src/data/portfolio.js`](src/data/portfolio.js) — no component changes needed.
 
 ---
-*Acknowledgements: This project is still under development. Thank you for your interest!*
+© Sai Satwik Bikumandla
