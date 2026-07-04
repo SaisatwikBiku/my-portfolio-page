@@ -930,6 +930,14 @@ main {
   font-size: 13px;
   color: #8a96b0;
 }
+.footer-copy a {
+  color: #cdd6e8;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+.footer-copy a:hover {
+  color: var(--white);
+}
 
 /* ============================================================
    Responsive

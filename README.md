@@ -3,7 +3,9 @@
 Personal portfolio website built with **React** and **Vite**. Showcases my background,
 skills, experience, and projects as a software engineer.
 
-🔗 **Live sections:** Home · About · Skills · Experience · Projects · Education · Contact
+🌐 **Live:** [satwik.info](https://satwik.info)
+
+🔗 **Sections:** Home · About · Skills · Experience · Projects · Education · Contact
 
 ## Tech Stack
 

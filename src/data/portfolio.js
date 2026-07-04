@@ -3,6 +3,12 @@
 const ICON = (name) =>
   `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}.svg`
 
+// Site / brand identity.
+export const site = {
+  domain: 'satwik.info',
+  url: 'https://satwik.info',
+}
+
 export const profile = {
   name: 'Sai Satwik Bikumandla',
   shortName: 'Sai Satwik',
