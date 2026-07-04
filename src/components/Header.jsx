@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { profile, navLinks } from '../data/portfolio.js'
+import { profile, navLinks, site } from '../data/portfolio.js'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
@@ -25,7 +25,7 @@ export default function Header() {
   return (
     <header className={`header ${scrolled ? 'header--scrolled' : ''}`}>
       <a href="#home" className="logo" onClick={close}>
-        {profile.shortName}
+        {site.domain}
       </a>
 
       <nav className={`navbar ${open ? 'navbar--open' : ''}`}>
