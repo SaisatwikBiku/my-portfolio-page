@@ -1,12 +1,12 @@
-import { profile, socials, navLinks } from '../data/portfolio.js'
+import { profile, socials, navLinks, site } from '../data/portfolio.js'
 
 export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <a href="#home" className="logo">{profile.shortName}</a>
-          <p>{profile.role} · {profile.location}</p>
+          <a href="#home" className="logo">{site.domain}</a>
+          <p>{profile.name} · {profile.role}</p>
         </div>
         <nav className="footer-nav">
           {navLinks.map((link) => (
@@ -22,7 +22,8 @@ export default function Footer() {
         </div>
       </div>
       <p className="footer-copy">
-        © {new Date().getFullYear()} {profile.name}. Built with React &amp; Vite.
+        © {new Date().getFullYear()} {profile.name} ·{' '}
+        <a href={site.url}>{site.domain}</a> · Built with React &amp; Vite.
       </p>
     </footer>
   )

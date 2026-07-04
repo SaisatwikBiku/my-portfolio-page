@@ -4,6 +4,7 @@
   "version": "2.0.0",
   "type": "module",
   "description": "Personal portfolio of Sai Satwik Bikumandla — Software Engineer",
+  "homepage": "https://satwik.info",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
