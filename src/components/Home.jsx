@@ -10,8 +10,11 @@ export default function Home() {
         <p className="home-greeting">Hello, it's me</p>
         <h1 className="home-name">{profile.name}</h1>
         <h2 className="home-role">
-          {profile.role}, also a <span className="typing-text">{typed}</span>
-          <span className="caret">|</span>
+          {profile.role}, also a{' '}
+          <span className="typing-wrap">
+            <span className="typing-text">{typed}</span>
+            <span className="caret">|</span>
+          </span>
         </h2>
         <p className="home-tagline">{profile.tagline}</p>
 

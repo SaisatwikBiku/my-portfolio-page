@@ -19,11 +19,11 @@ export const profile = {
     'Backend Developer',
   ],
   tagline:
-    'I ship complete systems — not just components. From frontend to backend to ML, I take ambiguous problems from idea to working, deployed software.',
+    'Software Engineer with full-stack knowledge, building production-grade software applications with AI/ML capabilities.',
   location: 'Albany, NY',
   email: 'bikumandlasaisatwik@gmail.com',
   phone: '+1 518 614 1904',
-  resume: '/SaiSatwikBikumandla_SWE.pdf',
+  resume: '/Sai_Satwik_Bikumandla_Resume.pdf',
 }
 
 export const socials = [
@@ -47,7 +47,7 @@ export const socials = [
 export const about = {
   paragraphs: [
     "I'm a software engineer and Master's student in Computer Science at the University at Albany (SUNY), based in Albany, NY. I build production-grade systems end to end — comfortable across the frontend, backend, and machine-learning layers of a product.",
-    "I've shipped a version-controlled resume platform with a server-side LaTeX pipeline, a real-time YOLO-based sports tracking system, and a cloud-secured relational database on Google Cloud SQL. I'm driven by project-based learning and turning fuzzy, real-world problems into software people can actually use.",
+    "I've shipped a version-controlled resume platform with a dual-render LaTeX pipeline, a real-time tennis ball detection and tracking system, and a cloud-secured relational database on Google Cloud SQL. I'm driven by project-based learning and turning fuzzy, real-world problems into software people can actually use.",
   ],
   highlights: [
     { value: '6+', label: 'Shipped Projects' },
@@ -100,8 +100,8 @@ export const skillGroups = [
     title: 'Tools & Cloud',
     skills: [
       { name: 'Git', icon: ICON('git/git-original') },
-      { name: 'Google Cloud', icon: ICON('googlecloud/googlecloud-original') },
       { name: 'Docker', icon: ICON('docker/docker-original') },
+      { name: 'Google Cloud', icon: ICON('googlecloud/googlecloud-original') },
       { name: 'LaTeX', icon: ICON('latex/latex-original') },
       { name: 'MATLAB', icon: ICON('matlab/matlab-original') },
     ],
@@ -114,27 +114,36 @@ export const projects = [
     subtitle: 'Version-Controlled Resume Platform',
     year: '2025',
     description:
-      'A full-stack SaaS-style app giving job seekers a GitHub-inspired resume workflow: named repositories, commit snapshots, full version history, and rollback to any prior state — backed by a server-side LaTeX compilation endpoint that exports print-ready PDFs from any historical commit.',
+      'A full-stack SaaS-style app giving job seekers a GitHub-inspired resume workflow: named repositories, commit snapshots, full version history, and rollback to any prior state. A dual-render pipeline pairs an HTML live preview for zero-latency editing with a server-side LaTeX endpoint that exports print-ready PDFs from any historical commit.',
     tags: ['Next.js', 'MongoDB', 'NextAuth', 'LaTeX'],
     href: 'https://github.com/SaisatwikBiku/latex-resume-builder',
-  },
-  {
-    title: 'Tennis Ball Detection & Tracking',
-    subtitle: 'Real-Time Computer Vision Pipeline',
-    year: '2025',
-    description:
-      'A YOLO-based tracking system using SORT for multi-object tracking, anti-jump filtering, exponential smoothing, and velocity extrapolation. Generates structured per-session analytics (velocity peaks, trajectory distance, detection rate) and ships as an interactive Gradio app.',
-    tags: ['YOLO', 'SORT', 'Gradio', 'OpenCV'],
-    private: true,
   },
   {
     title: 'Movie Recommendation System',
     subtitle: 'Content-Based NLP Engine',
     year: '2025',
     description:
-      'A content-based recommender over 5,000+ films using TF-IDF vectorization and cosine similarity, with a full NLP preprocessing pipeline. Evaluated relevance with Precision@K (K = 5, 10, 20) for data-driven threshold tuning over a random baseline.',
+      'A content-based recommender over 5,000+ films using TF-IDF vectorization and cosine similarity, with a full NLP preprocessing pipeline (tokenization, lemmatization, stop-word removal). Evaluated relevance with Precision@K (K = 5, 10, 20) for data-driven threshold tuning over a random baseline.',
     tags: ['TF-IDF', 'NLP', 'scikit-learn', 'Python'],
     href: 'https://github.com/SaisatwikBiku/movie-recommender-v2',
+  },
+  {
+    title: 'Tennis Ball Detection & Tracking',
+    subtitle: 'Real-Time Computer Vision Pipeline',
+    year: '2025',
+    description:
+      'Two production-quality tracking systems built on Roboflow\'s detection API: anti-jump filtering, exponential smoothing, velocity extrapolation, court-side A/B classification, and SORT multi-object tracking with per-track trajectory trails. A TrackingAnalytics engine exports structured per-session JSON, all wrapped in an interactive Gradio UI.',
+    tags: ['Roboflow', 'SORT', 'Gradio', 'Computer Vision'],
+    private: true,
+  },
+  {
+    title: 'Next-Word Predictor',
+    subtitle: 'LSTM Language Model',
+    year: '2025',
+    description:
+      'An LSTM language model (Embedding → LSTM 150 → Softmax) trained in TensorFlow/Keras on a 20,000-token corpus of IMDB reviews. Built the full data pipeline — tokenization, sliding-window sequencing, padding, one-hot encoding — with checkpoint-based persistence for instant reloads.',
+    tags: ['TensorFlow', 'Keras', 'LSTM', 'NLP'],
+    href: 'https://github.com/SaisatwikBiku/next_word_prediction',
   },
   {
     title: 'MyDishDB',
@@ -146,20 +155,11 @@ export const projects = [
     private: true,
   },
   {
-    title: 'Next-Word Predictor',
-    subtitle: 'LSTM Language Model',
-    year: '2025',
-    description:
-      'An LSTM language model (Embedding → LSTM 150 → Softmax) trained in TensorFlow/Keras on IMDB reviews. Built the full data pipeline — tokenization, sliding-window sequencing, padding, one-hot encoding — with checkpoint-based persistence for instant reloads.',
-    tags: ['TensorFlow', 'Keras', 'LSTM', 'NLP'],
-    href: 'https://github.com/SaisatwikBiku/next_word_prediction',
-  },
-  {
     title: 'Web Prototype Generator',
     subtitle: 'AI-Assisted Code Generation',
     year: '2024',
     description:
-      'Led the Gemini API integration layer, building a prompt-engineering pipeline that converts natural-language client briefs into responsive HTML/CSS/JS prototypes with auto-embedded imagery. Backend service layer built with Flask; introduced AI-attribution tagging standards.',
+      'Led the Gemini API integration layer, building a prompt-engineering pipeline that converts natural-language client briefs into responsive HTML/CSS/JS prototypes with auto-embedded Unsplash imagery. Backend service layer built with Flask; introduced AI-attribution tagging standards adopted across the team codebase.',
     tags: ['Gemini API', 'Flask', 'Prompt Engineering'],
     href: 'https://github.com/SaisatwikBiku/prototype-generator-for-web-dev',
   },
@@ -167,23 +167,24 @@ export const projects = [
 
 export const experience = [
   {
-    role: 'Web Developer Intern',
+    role: 'Website Design Intern',
     company: 'Rethink UX',
     period: 'Oct 2022 – Dec 2022',
     points: [
-      'Took sole ownership of 3 client-facing web feature modules from requirements to deployment, independently designing a role-based access control system later reused as a standard security layer.',
-      'Self-initiated technical documentation that was adopted into the standard onboarding workflow, reducing ramp-up friction for engineers joining after the internship.',
-      'Earned consistent code-review approvals from senior engineers within the first two weeks, writing production-quality code under professional standards.',
+      'Designed and built client-facing website features in HTML, CSS, and JavaScript, taking assigned modules from requirements through delivery.',
+      'Implemented access-control logic to restrict page features by user role.',
+      'Wrote technical documentation for the features I built, making handoff easier for the team after the internship ended.',
+      'Participated in code reviews with senior engineers and incorporated feedback to meet production standards.',
     ],
   },
   {
-    role: 'Developer Advocate',
+    role: 'Programming Content Intern',
     company: 'StudyExperts',
     period: 'Jun 2022 – Aug 2022',
     points: [
-      'Served as the technical bridge between engineering and users, translating complex product behavior into clear, actionable content for a developer audience.',
-      'Authored a structured library of tutorials and knowledge-base articles that became the primary self-service resource, measurably reducing repeated support escalations.',
-      'Operated as an informal QA layer — reproduced 10+ edge-case defects with full reproduction steps and environment context for immediate engineering action.',
+      'Created programming tutorials and technical knowledge-base articles covering Python, Java, and data structures, serving as self-service resources for the platform\'s users.',
+      'Wrote, tested, and debugged code examples across multiple languages to ensure published content was accurate and runnable.',
+      'Demonstrated that strong written communication and deep product understanding are force multipliers for small engineering teams — a lesson that informs how I document and advocate for my own projects.',
     ],
   },
 ]
