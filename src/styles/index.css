@@ -291,6 +291,11 @@ main {
   color: var(--ink-soft);
   margin-bottom: 20px;
 }
+.typing-wrap {
+  /* Never break inside the typed phrase — it types/deletes in a loop, and a
+     mid-phrase wrap makes the hero height jump on every cycle. */
+  white-space: nowrap;
+}
 .typing-text {
   color: var(--blue);
 }
@@ -981,8 +986,9 @@ main {
   .home {
     flex-direction: column-reverse;
     text-align: center;
-    gap: 36px;
-    padding-top: 110px;
+    gap: 16px;
+    justify-content: center;
+    padding-top: 96px;
   }
   .home-content {
     max-width: 100%;
@@ -991,6 +997,11 @@ main {
   .home-actions,
   .home-sci {
     justify-content: center;
+  }
+  /* On narrow screens the typed role gets its own line, so the heading is
+     always exactly two lines and the layout below never shifts. */
+  .home-role .typing-wrap {
+    display: block;
   }
 
   .about-grid {
