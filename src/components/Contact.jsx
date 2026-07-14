@@ -3,12 +3,24 @@ import emailjs from '@emailjs/browser'
 import Section from './Section.jsx'
 import { profile, socials, emailjsConfig } from '../data/portfolio.js'
 
+// Simple shape check: something@something.tld. Stricter than the browser's
+// type="email" validation, which accepts addresses without a dot (a@b).
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
 export default function Contact() {
   const formRef = useRef(null)
   const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [emailError, setEmailError] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const email = formRef.current.email.value.trim()
+    if (!EMAIL_RE.test(email)) {
+      setEmailError('Please enter a valid email address, like you@example.com.')
+      formRef.current.email.focus()
+      return
+    }
+    setEmailError('')
     setStatus('sending')
     emailjs
       .sendForm(emailjsConfig.serviceId, emailjsConfig.templateId, formRef.current, {
@@ -63,7 +75,20 @@ export default function Contact() {
         ) : (
           <form ref={formRef} onSubmit={handleSubmit} className="contact-form">
             <input type="text" name="name" placeholder="Your Name" required />
-            <input type="email" name="email" placeholder="Your Email" required />
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              required
+              aria-invalid={!!emailError}
+              className={emailError ? 'input-error' : ''}
+              onChange={() => emailError && setEmailError('')}
+            />
+            {emailError && (
+              <p className="contact-field-error" role="alert">
+                {emailError}
+              </p>
+            )}
             <textarea name="message" rows="5" placeholder="Your Message" required />
             <button type="submit" className="btn btn--primary" disabled={status === 'sending'}>
               {status === 'sending' ? 'Sending…' : 'Send Message'}
