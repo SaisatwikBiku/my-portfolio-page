@@ -21,7 +21,14 @@ export default function About() {
   const [statsRef, statsVisible] = useReveal()
 
   return (
-    <Section id="about" title="About Me" eyebrow="Who I Am" className="about">
+    <Section
+      id="about"
+      title="About Me"
+      eyebrow="Who I Am"
+      num="01"
+      lead="Every portfolio starts with a person — here's the short version of mine."
+      className="about"
+    >
       <div className="about-grid">
         <div className="about-image">
           <img src="/about-image.png" alt="Sai Satwik Bikumandla" />

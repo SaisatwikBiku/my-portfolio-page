@@ -29,7 +29,14 @@ export default function Projects() {
   const shown = active === 'All' ? projects : projects.filter((p) => p.category === active)
 
   return (
-    <Section id="projects" title="Projects" eyebrow="Things I've Built" className="projects">
+    <Section
+      id="projects"
+      title="Projects"
+      eyebrow="Things I've Built"
+      num="03"
+      lead="Proof over promises — things that actually work."
+      className="projects"
+    >
       <div className="project-filters" role="tablist" aria-label="Filter projects by category">
         {filters.map((filter) => (
           <button

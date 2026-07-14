@@ -20,7 +20,14 @@ const faceTransforms = [
 
 export default function Skills() {
   return (
-    <Section id="skills" title="Skills & Tooling" eyebrow="What I Work With" className="skills">
+    <Section
+      id="skills"
+      title="Skills & Tooling"
+      eyebrow="What I Work With"
+      num="02"
+      lead="Collected project by project, sharpened bug by bug."
+      className="skills"
+    >
       <div className="tech-cube-stage" aria-hidden="true">
         <div className="tech-cube">
           {cubeFaces.map((skill, i) => (
@@ -38,11 +45,11 @@ export default function Skills() {
             <div className="skill-chips">
               {group.skills.map((skill, i) => (
                 <div
-                  className="skill-chip"
+                  className={`skill-chip${skill.icon ? '' : ' skill-chip--text'}`}
                   key={skill.name}
                   style={{ '--d': `${gi * 90 + i * 50}ms` }}
                 >
-                  <img src={skill.icon} alt={skill.name} loading="lazy" />
+                  {skill.icon && <img src={skill.icon} alt="" loading="lazy" />}
                   <span>{skill.name}</span>
                 </div>
               ))}

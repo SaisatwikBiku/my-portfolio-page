@@ -320,9 +320,15 @@ main {
   margin-bottom: 20px;
 }
 .typing-wrap {
-  /* Never break inside the typed phrase — it types/deletes in a loop, and a
-     mid-phrase wrap makes the hero height jump on every cycle. */
+  /* The typed role always sits on its own line (below "…also a"), so the
+     heading is a constant two lines and never reflows as the phrase types and
+     deletes. Without this, a long phrase like "ML / Computer Vision Engineer"
+     wraps the inline line to two rows only for part of each loop, jumping the
+     whole hero. white-space:nowrap keeps a long phrase from wrapping
+     internally; min-height reserves the line even while it's momentarily empty. */
+  display: block;
   white-space: nowrap;
+  min-height: 1.2em;
 }
 .typing-text {
   color: var(--blue);
@@ -350,6 +356,17 @@ main {
   font-size: 15px;
   color: var(--ink-faint);
   margin-bottom: 28px;
+}
+.home-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.home-meta svg {
+  width: 16px;
+  height: 16px;
+  color: var(--blue);
+  flex-shrink: 0;
 }
 
 .home-actions {
@@ -509,8 +526,23 @@ main {
   border-color: var(--blue);
 }
 .skill-chip img {
-  width: 22px;
   height: 22px;
+  width: auto;
+  /* auto width keeps wordmark logos (e.g. AWS) from squishing */
+  max-width: 40px;
+}
+/* Conceptual skills have no logo — symmetric padding and an accent dot keep
+   them visually consistent with the icon chips. */
+.skill-chip--text {
+  padding: 8px 15px;
+}
+.skill-chip--text::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  flex-shrink: 0;
 }
 
 /* ============================================================
@@ -781,6 +813,64 @@ main {
   border-radius: 999px;
 }
 
+.certifications {
+  margin-top: 44px;
+}
+.certifications-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  text-align: center;
+}
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.cert-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.cert-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(0, 123, 255, 0.4);
+}
+.cert-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--bg-alt);
+  color: var(--blue);
+}
+.cert-badge svg {
+  width: 22px;
+  height: 22px;
+}
+.cert-body h4 {
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.cert-body p {
+  font-size: 13.5px;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+
 /* ============================================================
    Contact
    ============================================================ */
@@ -965,9 +1055,14 @@ main {
 .footer-socials a:hover {
   background: var(--blue);
 }
+.footer-socials svg,
 .footer-socials img {
   width: 18px;
   height: 18px;
+  color: #fff;
+}
+/* Fallback img path (non-brand socials) still needs whitening. */
+.footer-socials img {
   filter: brightness(0) invert(1);
 }
 .footer-copy {
@@ -1039,11 +1134,6 @@ main {
   .home-actions,
   .home-sci {
     justify-content: center;
-  }
-  /* On narrow screens the typed role gets its own line, so the heading is
-     always exactly two lines and the layout below never shifts. */
-  .home-role .typing-wrap {
-    display: block;
   }
 
   .about-grid {
@@ -1322,7 +1412,8 @@ main {
   animation: card-in 0.5s ease backwards;
   animation-delay: var(--d, 0s);
 }
-.section.is-visible .education-card {
+.section.is-visible .education-card,
+.section.is-visible .cert-card {
   animation: card-in 0.6s ease backwards;
   animation-delay: var(--d, 0s);
 }
@@ -1818,10 +1909,141 @@ main {
   }
 }
 
+/* --- Storytelling: chapter numbers + narrative leads --- */
+.section-num {
+  color: var(--ink-faint);
+  margin-right: 10px;
+  padding-right: 10px;
+  border-right: 1.5px solid var(--border);
+}
+.section-lead {
+  max-width: 560px;
+  margin: 14px auto 0;
+  font-size: 15.5px;
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
+/* --- Hero: multilingual greeting + name swoosh --- */
+.greet-word {
+  display: inline-block;
+  min-width: 64px;
+  text-align: left;
+  animation: greet-in 0.5s ease;
+}
+@keyframes greet-in {
+  from { opacity: 0; transform: translateY(9px); }
+}
+.name-swoosh {
+  display: block;
+  width: 210px;
+  height: 12px;
+  margin: 0 0 12px 4px;
+}
+.name-swoosh path {
+  stroke-dasharray: 230;
+  stroke-dashoffset: 230;
+  animation: swoosh-draw 0.9s ease forwards 1s;
+}
+@keyframes swoosh-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* --- Magnetic buttons --- */
+.magnetic {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1.4);
+  will-change: transform;
+}
+
+/* --- Cursor spotlight (desktop only; JS keeps it off for touch/reduced motion) --- */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(36, 146, 255, 0.14), transparent 65%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+:root[data-theme='light'] .cursor-glow {
+  background: radial-gradient(circle, rgba(0, 123, 255, 0.07), transparent 65%);
+  mix-blend-mode: multiply;
+}
+
+/* --- Experience: the timeline draws itself in --- */
+.timeline::before {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1.3s cubic-bezier(0.3, 0.6, 0.2, 1) 0.15s;
+}
+.section.is-visible .timeline::before {
+  transform: scaleY(1);
+}
+
+/* --- About stats: hover lift --- */
+.about-stat {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.about-stat:hover {
+  transform: translateY(-3px);
+  border-color: var(--blue);
+  box-shadow: var(--shadow-md);
+}
+
+/* --- Spidy: pulse ring + one-time nudge bubble --- */
+.chatbot-fab::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: fab-ping 2.8s ease-out infinite 2s;
+  pointer-events: none;
+}
+.chatbot-fab--open::after {
+  animation: none;
+}
+@keyframes fab-ping {
+  0% { box-shadow: 0 0 0 0 rgba(36, 146, 255, 0.45); }
+  60% { box-shadow: 0 0 0 16px rgba(36, 146, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(36, 146, 255, 0); }
+}
+.chatbot-nudge {
+  position: fixed;
+  left: 86px;
+  bottom: 30px;
+  max-width: 240px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  font-size: 13.5px;
+  color: var(--ink);
+  box-shadow: var(--shadow-md);
+  z-index: 96;
+  animation: chip-in 0.4s ease backwards;
+}
+.chatbot-nudge strong {
+  color: var(--blue);
+}
+
 /* --- Motion: responsive adjustments --- */
 @media (max-width: 900px) {
   .scroll-cue {
     display: none;
+  }
+  /* Hero is center-aligned on mobile — keep the swoosh under the name. */
+  .name-swoosh {
+    margin: 0 auto 12px;
+  }
+  .greet-word {
+    min-width: 0;
   }
 }
 @media (max-width: 560px) {
@@ -1838,6 +2060,11 @@ main {
     bottom: 16px;
     width: 42px;
     height: 42px;
+  }
+  .chatbot-nudge {
+    left: 74px;
+    bottom: 22px;
+    max-width: 200px;
   }
 }
 

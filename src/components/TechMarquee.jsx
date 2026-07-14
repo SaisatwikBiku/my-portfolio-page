@@ -1,6 +1,7 @@
 import { skillGroups } from '../data/portfolio.js'
 
-const items = skillGroups.flatMap((group) => group.skills)
+// Only logo-bearing skills belong in the visual ticker.
+const items = skillGroups.flatMap((group) => group.skills).filter((skill) => skill.icon)
 
 // Full-width infinite logo ticker between the hero and About. The item list is
 // rendered twice so the -50% translate loop is seamless; hovering pauses it.

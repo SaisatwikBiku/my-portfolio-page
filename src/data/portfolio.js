@@ -37,11 +37,6 @@ export const socials = [
     href: 'https://github.com/SaisatwikBiku',
     icon: ICON('github/github-original'),
   },
-  {
-    name: 'LeetCode',
-    href: 'https://leetcode.com/u/SaiSatwikBikumandla/',
-    icon: ICON('leetcode/leetcode-original'),
-  },
 ]
 
 // Tech badges that float around the hero photo.
@@ -63,6 +58,8 @@ export const about = {
   ],
 }
 
+// Skills mirror the resume's categories. Chips with an `icon` render the logo;
+// conceptual skills (no logo) render as text-only pills.
 export const skillGroups = [
   {
     title: 'Languages',
@@ -75,22 +72,12 @@ export const skillGroups = [
     ],
   },
   {
-    title: 'Web & Backend',
+    title: 'Frameworks & Backend',
     skills: [
       { name: 'React', icon: ICON('react/react-original') },
       { name: 'Next.js', icon: ICON('nextjs/nextjs-original') },
       { name: 'Node.js', icon: ICON('nodejs/nodejs-original') },
       { name: 'Flask', icon: ICON('flask/flask-original') },
-      { name: 'HTML5', icon: ICON('html5/html5-original') },
-      { name: 'CSS3', icon: ICON('css3/css3-original') },
-    ],
-  },
-  {
-    title: 'Databases',
-    skills: [
-      { name: 'MySQL', icon: ICON('mysql/mysql-original') },
-      { name: 'MongoDB', icon: ICON('mongodb/mongodb-original') },
-      { name: 'Cloud SQL', icon: ICON('googlecloud/googlecloud-original') },
     ],
   },
   {
@@ -104,15 +91,52 @@ export const skillGroups = [
     ],
   },
   {
-    title: 'Tools & Cloud',
+    title: 'Databases & Cloud',
     skills: [
-      { name: 'Git', icon: ICON('git/git-original') },
-      { name: 'Docker', icon: ICON('docker/docker-original') },
+      { name: 'MongoDB', icon: ICON('mongodb/mongodb-original') },
+      { name: 'MySQL', icon: ICON('mysql/mysql-original') },
       { name: 'Google Cloud', icon: ICON('googlecloud/googlecloud-original') },
-      { name: 'LaTeX', icon: ICON('latex/latex-original') },
-      { name: 'MATLAB', icon: ICON('matlab/matlab-original') },
+      { name: 'AWS', icon: ICON('amazonwebservices/amazonwebservices-original-wordmark') },
     ],
   },
+  {
+    title: 'DevOps & Architecture',
+    skills: [
+      { name: 'Docker', icon: ICON('docker/docker-original') },
+      { name: 'Kubernetes', icon: ICON('kubernetes/kubernetes-original') },
+      { name: 'CI/CD' },
+      { name: 'Microservices' },
+      { name: 'System Design' },
+      { name: 'API Design' },
+    ],
+  },
+  {
+    title: 'Web Design & Frontend',
+    skills: [
+      { name: 'Figma', icon: ICON('figma/figma-original') },
+      { name: 'HTML5', icon: ICON('html5/html5-original') },
+      { name: 'CSS3', icon: ICON('css3/css3-original') },
+      { name: 'UI/UX Design' },
+      { name: 'Responsive Design' },
+      { name: 'Accessibility (WCAG)' },
+    ],
+  },
+  {
+    title: 'Tools & Practices',
+    skills: [
+      { name: 'Git', icon: ICON('git/git-original') },
+      { name: 'LaTeX', icon: ICON('latex/latex-original') },
+      { name: 'MATLAB', icon: ICON('matlab/matlab-original') },
+      { name: 'REST APIs' },
+      { name: 'Unit Testing' },
+      { name: 'Agile/Scrum' },
+    ],
+  },
+]
+
+export const certifications = [
+  { name: 'Google AI Essentials', issuer: 'Google', date: 'July 2026' },
+  { name: 'Building with the Claude API', issuer: 'Anthropic', date: 'March 2026' },
 ]
 
 export const projects = [
@@ -232,8 +256,8 @@ export const navLinks = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
   { label: 'Skills', href: '#skills' },
-  { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Experience', href: '#experience' },
   { label: 'Contact', href: '#contact' },
 ]
 

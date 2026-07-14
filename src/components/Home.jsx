@@ -1,15 +1,26 @@
-import { lazy, Suspense, useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { profile, socials, heroBadges } from '../data/portfolio.js'
 import { useTyped } from '../hooks/useTyped.js'
+import Magnetic from './Magnetic.jsx'
 
 // Lazy-loaded so three.js lands in its own chunk after first paint — the hero
 // is fully usable while the 3D backdrop streams in.
 const Hero3D = lazy(() => import('./Hero3D.jsx'))
 
+// The greeting cycles through the four languages Sai speaks — English, Telugu,
+// Hindi, and German — a small story beat that pays off in the Languages section.
+const GREETINGS = ['Hello', 'నమస్తే', 'नमस्ते', 'Hallo']
+
 export default function Home() {
   const typed = useTyped(profile.typedRoles)
+  const [greetIdx, setGreetIdx] = useState(0)
   const heroRef = useRef(null)
   const photoRef = useRef(null)
+
+  useEffect(() => {
+    const timer = setInterval(() => setGreetIdx((i) => (i + 1) % GREETINGS.length), 2600)
+    return () => clearInterval(timer)
+  }, [])
 
   // Subtle mouse parallax on the photo — desktop pointers only, and skipped
   // entirely for users who prefer reduced motion.
@@ -46,8 +57,16 @@ export default function Home() {
         <Hero3D />
       </Suspense>
       <div className="home-content">
-        <p className="home-greeting">Hello, it's me</p>
+        <p className="home-greeting">
+          <span className="greet-word" key={greetIdx}>
+            {GREETINGS[greetIdx]}
+          </span>
+          , it's me
+        </p>
         <h1 className="home-name">{profile.name}</h1>
+        <svg className="name-swoosh" viewBox="0 0 220 14" fill="none" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M3 10 C 60 2, 140 2, 217 8" stroke="var(--blue)" strokeWidth="4" strokeLinecap="round" />
+        </svg>
         <h2 className="home-role">
           {profile.role}, also a{' '}
           <span className="typing-wrap">
@@ -58,17 +77,33 @@ export default function Home() {
         <p className="home-tagline">{profile.tagline}</p>
 
         <div className="home-meta">
-          <span>📍 {profile.location}</span>
-          <span>✉️ {profile.email}</span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            {profile.location}
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+            {profile.email}
+          </span>
         </div>
 
         <div className="home-actions">
-          <a className="btn btn--primary" href={profile.resume} target="_blank" rel="noreferrer">
-            View Résumé
-          </a>
-          <a className="btn btn--ghost" href="#projects">
-            See My Work
-          </a>
+          <Magnetic>
+            <a className="btn btn--primary" href={profile.resume} target="_blank" rel="noreferrer">
+              View Résumé
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a className="btn btn--ghost" href="#projects">
+              See My Work
+            </a>
+          </Magnetic>
         </div>
 
         <div className="home-sci">
