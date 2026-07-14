@@ -879,6 +879,18 @@ main {
   color: #d12c2c;
   font-size: 14px;
 }
+.contact-form .input-error {
+  border-color: #d12c2c;
+}
+.contact-form .input-error:focus {
+  border-color: #d12c2c;
+  box-shadow: 0 0 0 3px rgba(209, 44, 44, 0.12);
+}
+.contact-field-error {
+  color: #d12c2c;
+  font-size: 13px;
+  margin-top: -8px;
+}
 .contact-success {
   display: flex;
   flex-direction: column;
