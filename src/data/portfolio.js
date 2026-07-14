@@ -44,6 +44,13 @@ export const socials = [
   },
 ]
 
+// Tech badges that float around the hero photo.
+export const heroBadges = [
+  { name: 'React', icon: ICON('react/react-original') },
+  { name: 'Python', icon: ICON('python/python-original') },
+  { name: 'TensorFlow', icon: ICON('tensorflow/tensorflow-original') },
+]
+
 export const about = {
   paragraphs: [
     "I'm a software engineer and Master's student in Computer Science at the University at Albany (SUNY), based in Albany, NY. I build production-grade systems end to end — comfortable across the frontend, backend, and machine-learning layers of a product.",
@@ -113,6 +120,7 @@ export const projects = [
     title: 'LaTeX Resume Builder',
     subtitle: 'Version-Controlled Resume Platform',
     year: '2025',
+    category: 'Full-Stack',
     description:
       'A full-stack SaaS-style app giving job seekers a GitHub-inspired resume workflow: named repositories, commit snapshots, full version history, and rollback to any prior state. A dual-render pipeline pairs an HTML live preview for zero-latency editing with a server-side LaTeX endpoint that exports print-ready PDFs from any historical commit.',
     tags: ['Next.js', 'MongoDB', 'NextAuth', 'LaTeX'],
@@ -122,6 +130,7 @@ export const projects = [
     title: 'Movie Recommendation System',
     subtitle: 'Content-Based NLP Engine',
     year: '2025',
+    category: 'ML & AI',
     description:
       'A content-based recommender over 5,000+ films using TF-IDF vectorization and cosine similarity, with a full NLP preprocessing pipeline (tokenization, lemmatization, stop-word removal). Evaluated relevance with Precision@K (K = 5, 10, 20) for data-driven threshold tuning over a random baseline.',
     tags: ['TF-IDF', 'NLP', 'scikit-learn', 'Python'],
@@ -131,6 +140,7 @@ export const projects = [
     title: 'Tennis Ball Detection & Tracking',
     subtitle: 'Real-Time Computer Vision Pipeline',
     year: '2025',
+    category: 'ML & AI',
     description:
       'Two production-quality tracking systems built on Roboflow\'s detection API: anti-jump filtering, exponential smoothing, velocity extrapolation, court-side A/B classification, and SORT multi-object tracking with per-track trajectory trails. A TrackingAnalytics engine exports structured per-session JSON, all wrapped in an interactive Gradio UI.',
     tags: ['Roboflow', 'SORT', 'Gradio', 'Computer Vision'],
@@ -140,6 +150,7 @@ export const projects = [
     title: 'Next-Word Predictor',
     subtitle: 'LSTM Language Model',
     year: '2025',
+    category: 'ML & AI',
     description:
       'An LSTM language model (Embedding → LSTM 150 → Softmax) trained in TensorFlow/Keras on a 20,000-token corpus of IMDB reviews. Built the full data pipeline — tokenization, sliding-window sequencing, padding, one-hot encoding — with checkpoint-based persistence for instant reloads.',
     tags: ['TensorFlow', 'Keras', 'LSTM', 'NLP'],
@@ -149,6 +160,7 @@ export const projects = [
     title: 'MyDishDB',
     subtitle: 'Cloud-Deployed Relational Database',
     year: '2025',
+    category: 'Data & Cloud',
     description:
       'A fully normalized MySQL schema (E-R → DDL) spanning 10+ entities with CHECK constraints, triggers, and referential integrity. Deployed on Google Cloud SQL with role-based access control and a JWT-authenticated backend, optimized with indexed multi-table JOINs.',
     tags: ['MySQL', 'Google Cloud SQL', 'JWT', 'Schema Design'],
@@ -158,6 +170,7 @@ export const projects = [
     title: 'Web Prototype Generator',
     subtitle: 'AI-Assisted Code Generation',
     year: '2024',
+    category: 'Full-Stack',
     description:
       'Led the Gemini API integration layer, building a prompt-engineering pipeline that converts natural-language client briefs into responsive HTML/CSS/JS prototypes with auto-embedded Unsplash imagery. Backend service layer built with Flask; introduced AI-attribution tagging standards adopted across the team codebase.',
     tags: ['Gemini API', 'Flask', 'Prompt Engineering'],

@@ -14,6 +14,10 @@
   --surface: #ffffff;
   --border: #e2e8f3;
   --white: #ffffff;
+  --header-bg: rgba(247, 249, 252, 0.85);
+  --header-bg-solid: rgba(247, 249, 252, 0.97);
+  --cube-face: rgba(255, 255, 255, 0.88);
+  --footer-bg: #0f1726;
   --shadow-sm: 0 2px 10px rgba(15, 23, 38, 0.06);
   --shadow-md: 0 10px 30px rgba(15, 23, 38, 0.08);
   --shadow-blue: 0 14px 36px rgba(0, 123, 255, 0.22);
@@ -21,6 +25,29 @@
   --radius-sm: 10px;
   --max: 1140px;
   --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+
+/* Dark theme (the default — index.html ships with data-theme="dark"). */
+:root[data-theme='dark'] {
+  --blue: #2492ff;
+  --blue-dark: #5caeff;
+  --blue-darker: #1265c4;
+  --ink: #e8eefc;
+  --ink-soft: #a9b7d6;
+  --ink-faint: #7d8aa8;
+  --bg: #0a0f1e;
+  --bg-alt: #111a30;
+  --surface: #121b32;
+  --border: #223154;
+  --header-bg: rgba(10, 15, 30, 0.8);
+  --header-bg-solid: rgba(10, 15, 30, 0.97);
+  --cube-face: rgba(18, 27, 50, 0.85);
+  --footer-bg: #070b16;
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-blue: 0 14px 36px rgba(0, 123, 255, 0.28);
+  color-scheme: dark;
 }
 
 * {
@@ -48,6 +75,7 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 img {
@@ -117,7 +145,7 @@ a {
   transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
 }
 .header--scrolled {
-  background: rgba(247, 249, 252, 0.85);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   box-shadow: var(--shadow-sm);
   padding-top: 12px;
@@ -130,7 +158,7 @@ a {
    drawer is sized against the viewport and fills the screen. */
 @media (max-width: 900px) {
   .header--scrolled {
-    background: rgba(247, 249, 252, 0.97);
+    background: var(--header-bg-solid);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -477,7 +505,8 @@ main {
 }
 .skill-chip:hover {
   transform: translateY(-2px);
-  background: var(--white);
+  background: var(--surface);
+  border-color: var(--blue);
 }
 .skill-chip img {
   width: 22px;
@@ -869,7 +898,8 @@ main {
    Footer
    ============================================================ */
 .footer {
-  background: var(--ink);
+  /* Fixed dark palette in both themes — footer text colors are tuned for it. */
+  background: var(--footer-bg);
   color: #cdd6e8;
   padding: 48px clamp(20px, 6vw, 40px) 28px;
   margin-top: 40px;
@@ -1043,6 +1073,762 @@ main {
   }
 }
 
+/* ============================================================
+   Motion & interactivity
+   ============================================================ */
+
+/* --- Keyframes --- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(26px); }
+}
+@keyframes photo-in {
+  from { opacity: 0; transform: scale(0.85); }
+}
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+}
+@keyframes chip-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.9); }
+}
+@keyframes slide-left {
+  from { opacity: 0; transform: translateX(-28px); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(-44px, 32px) scale(1.12); }
+}
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+@keyframes marker-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.18); }
+  50% { box-shadow: 0 0 0 9px rgba(0, 123, 255, 0.06); }
+}
+@keyframes wheel {
+  0% { opacity: 1; transform: translateY(0); }
+  70% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 0; transform: translateY(0); }
+}
+
+/* --- Scroll progress bar --- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue), #52a7ff);
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 300;
+  pointer-events: none;
+}
+
+/* --- Nav: animated underline + scrollspy active state --- */
+.navbar a:not(.navbar-cta) {
+  position: relative;
+}
+.navbar a:not(.navbar-cta)::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--blue);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.navbar a:not(.navbar-cta):hover::after,
+.navbar a:not(.navbar-cta).active::after {
+  transform: scaleX(1);
+}
+.navbar a.active {
+  color: var(--blue);
+}
+
+/* --- Section headings: underline grows in on reveal --- */
+.section-title::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 4px;
+  margin: 14px auto 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--blue-darker));
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.3, 1) 0.25s;
+}
+.section.is-visible .section-title::after {
+  width: 64px;
+}
+
+/* --- Hero entrance: each element rises in sequence --- */
+.home-content > * {
+  animation: rise 0.65s ease backwards;
+}
+.home-content > *:nth-child(1) { animation-delay: 0.05s; }
+.home-content > *:nth-child(2) { animation-delay: 0.14s; }
+.home-content > *:nth-child(3) { animation-delay: 0.23s; }
+.home-content > *:nth-child(4) { animation-delay: 0.32s; }
+.home-content > *:nth-child(5) { animation-delay: 0.41s; }
+.home-content > *:nth-child(6) { animation-delay: 0.5s; }
+.home-content > *:nth-child(7) { animation-delay: 0.59s; }
+
+/* Shimmer sweep across the name (rides on top of the rise entrance). */
+.home-name {
+  background: linear-gradient(
+    100deg,
+    var(--ink) 0%,
+    var(--ink) 38%,
+    var(--blue) 50%,
+    var(--ink) 62%,
+    var(--ink) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    rise 0.65s ease backwards 0.14s,
+    shimmer 7s linear 1s infinite;
+}
+
+/* Hero background blobs drift slowly. */
+.home::before {
+  animation: drift 16s ease-in-out infinite alternate;
+}
+.home::after {
+  content: '';
+  position: absolute;
+  bottom: -15%;
+  left: -12%;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(0, 123, 255, 0.1), transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+  animation: drift 21s ease-in-out infinite alternate-reverse;
+}
+
+/* Photo: scale-in entrance, gentle bob, and mouse parallax via --px/--py. */
+.profile-photo {
+  position: relative;
+  animation: photo-in 0.8s cubic-bezier(0.2, 0.8, 0.3, 1.15) backwards 0.2s;
+  transform: translate(var(--px, 0px), var(--py, 0px));
+  transition: transform 0.25s ease-out;
+  will-change: transform;
+}
+.profile-photo-ring {
+  animation: bob 6s ease-in-out infinite 1s;
+}
+
+/* Floating tech badges around the photo. */
+.float-badge {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  box-shadow: var(--shadow-md);
+  animation: bob 5s ease-in-out infinite;
+  pointer-events: none;
+}
+.float-badge img {
+  width: 18px;
+  height: 18px;
+}
+.float-badge--1 { top: 6%; right: -8%; }
+.float-badge--2 { bottom: 22%; left: -14%; animation-delay: 1.2s; animation-duration: 6s; }
+.float-badge--3 { bottom: -4%; right: 4%; animation-delay: 2.1s; animation-duration: 5.4s; }
+
+/* Scroll cue: little mouse outline with a falling wheel dot. */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 42px;
+  border: 2px solid var(--ink-faint);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  padding-top: 7px;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+  animation: rise 0.6s ease backwards 1s;
+}
+.scroll-cue:hover {
+  opacity: 1;
+  border-color: var(--blue);
+}
+.scroll-cue-wheel {
+  width: 4px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--blue);
+  animation: wheel 1.7s ease-out infinite;
+}
+
+/* --- About: image hover + (counters are JS-driven) --- */
+.about-image img {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.about-image img:hover {
+  transform: scale(1.03) rotate(-1deg);
+  box-shadow: var(--shadow-blue);
+}
+
+/* --- Staggered reveals (delays set inline via --d) ---
+   `backwards` fill hides elements during their delay, then releases them to
+   their natural styles after the animation so hover transitions still work. */
+.section.is-visible .skill-group {
+  animation: card-in 0.6s ease backwards;
+  animation-delay: var(--d, 0s);
+}
+.section.is-visible .skill-chip {
+  animation: chip-in 0.45s ease backwards;
+  animation-delay: var(--d, 0s);
+}
+.section.is-visible .timeline-item {
+  animation: slide-left 0.6s ease backwards;
+  animation-delay: var(--d, 0s);
+}
+.section.is-visible .project-card {
+  animation: card-in 0.5s ease backwards;
+  animation-delay: var(--d, 0s);
+}
+.section.is-visible .education-card {
+  animation: card-in 0.6s ease backwards;
+  animation-delay: var(--d, 0s);
+}
+.section.is-visible .language-chip {
+  animation: chip-in 0.45s ease backwards;
+  animation-delay: var(--d, 0s);
+}
+
+/* --- Skills: icon pop on hover --- */
+.skill-chip img {
+  transition: transform 0.3s ease;
+}
+.skill-chip:hover img {
+  transform: rotate(-8deg) scale(1.25);
+}
+
+/* --- Experience: pulsing markers, card nudge on hover --- */
+.timeline-marker {
+  animation: marker-pulse 2.6s ease-in-out infinite;
+}
+.timeline-body {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.timeline-body:hover {
+  transform: translateX(6px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(0, 123, 255, 0.35);
+}
+
+/* --- Projects: filter tabs --- */
+.project-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 36px;
+}
+.project-filter {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease,
+    transform 0.2s ease, box-shadow 0.2s ease;
+}
+.project-filter:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: translateY(-1px);
+}
+.project-filter.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+  box-shadow: var(--shadow-blue);
+}
+
+/* --- Projects: 3D tilt + cursor glare (vars set from JS) --- */
+.project-card {
+  position: relative;
+  overflow: hidden;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+.project-card:hover {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
+    translateY(-6px);
+}
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    420px circle at var(--gx, 50%) var(--gy, 50%),
+    rgba(0, 123, 255, 0.09),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.project-card:hover::before {
+  opacity: 1;
+}
+.project-card--more::before {
+  background: radial-gradient(
+    420px circle at var(--gx, 50%) var(--gy, 50%),
+    rgba(255, 255, 255, 0.14),
+    transparent 60%
+  );
+}
+
+/* --- Education & languages: hover lifts --- */
+.education-card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.education-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.language-chip {
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.language-chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue);
+}
+
+/* --- Back to top --- */
+.back-to-top {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue);
+  color: var(--white);
+  cursor: pointer;
+  box-shadow: var(--shadow-blue);
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+  z-index: 90;
+}
+.back-to-top.show {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.back-to-top:hover {
+  background: var(--blue-dark);
+  transform: translateY(-2px);
+}
+
+/* --- Hero: WebGL 3D backdrop --- */
+.hero-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-3d canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Keep hero content above the canvas. */
+.home-content,
+.scroll-cue {
+  position: relative;
+  z-index: 1;
+}
+.profile-photo {
+  z-index: 1;
+}
+
+/* --- Tech marquee: infinite logo ticker --- */
+.marquee {
+  overflow: hidden;
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 36s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  /* Spacing via margin (not flex gap) so the -50% loop point is seamless. */
+  margin-right: 48px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.marquee-item img {
+  width: 20px;
+  height: 20px;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* --- Skills: CSS 3D spinning tech cube --- */
+.tech-cube-stage {
+  perspective: 1000px;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 52px;
+}
+.tech-cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: cube-spin 16s linear infinite;
+}
+.cube-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cube-face);
+  border: 1.5px solid rgba(0, 123, 255, 0.35);
+  border-radius: 12px;
+  box-shadow: inset 0 0 26px rgba(0, 123, 255, 0.1);
+}
+.cube-face img {
+  width: 54px;
+  height: 54px;
+}
+@keyframes cube-spin {
+  from { transform: rotateX(-18deg) rotateY(0deg); }
+  to { transform: rotateX(-18deg) rotateY(360deg); }
+}
+
+/* --- Theme toggle + dark-mode fixups --- */
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: rotate(15deg);
+}
+
+/* The WebGL wireframes are tuned for dark; dim the canvas a bit on light. */
+:root[data-theme='light'] .hero-3d {
+  opacity: 0.72;
+}
+
+/* Devicons that are solid black (Next.js, Flask, LaTeX, GitHub) vanish on
+   dark surfaces — invert them. */
+:root[data-theme='dark'] img[src*='nextjs'],
+:root[data-theme='dark'] img[src*='flask'],
+:root[data-theme='dark'] img[src*='latex'],
+:root[data-theme='dark'] img[src*='github'] {
+  filter: invert(1);
+}
+/* Social icons keep their brand colors on dark cards — the light theme's
+   grayscale idle treatment reads as smudges on dark surfaces. */
+:root[data-theme='dark'] .home-sci img,
+:root[data-theme='dark'] .contact-socials img {
+  filter: opacity(0.9);
+}
+/* …except GitHub's black mark, which needs inverting to stay visible. */
+:root[data-theme='dark'] .home-sci img[src*='github'],
+:root[data-theme='dark'] .contact-socials img[src*='github'] {
+  filter: invert(1) opacity(0.9);
+}
+
+/* --- Chatbot --- */
+.chatbot-fab {
+  position: fixed;
+  left: 22px;
+  bottom: 22px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--blue), var(--blue-darker));
+  color: var(--white);
+  cursor: pointer;
+  box-shadow: var(--shadow-blue);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  z-index: 96;
+}
+.chatbot-fab:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+.chatbot-fab--open {
+  transform: rotate(90deg);
+}
+
+.chatbot-panel {
+  position: fixed;
+  left: 22px;
+  bottom: 86px;
+  width: min(370px, calc(100vw - 44px));
+  max-height: min(540px, calc(100vh - 120px));
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  z-index: 96;
+  animation: card-in 0.3s ease backwards;
+}
+
+.chatbot-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-darker));
+  color: var(--white);
+}
+.chatbot-head strong {
+  font-size: 15px;
+  display: block;
+}
+.chatbot-head p {
+  font-size: 12px;
+  opacity: 0.85;
+}
+.chatbot-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3);
+  flex-shrink: 0;
+}
+
+.chatbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 200px;
+}
+.chatbot-msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  animation: chip-in 0.25s ease backwards;
+}
+.chatbot-msg--bot {
+  align-self: flex-start;
+  background: var(--bg-alt);
+  color: var(--ink);
+  border-bottom-left-radius: 4px;
+}
+.chatbot-msg--user {
+  align-self: flex-end;
+  background: var(--blue);
+  color: var(--white);
+  border-bottom-right-radius: 4px;
+}
+.chatbot-msg--error {
+  border: 1px solid rgba(209, 44, 44, 0.4);
+}
+
+.chatbot-typing {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 14px;
+}
+.chatbot-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  animation: typing-bounce 1.2s ease-in-out infinite;
+}
+.chatbot-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.chatbot-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: none; opacity: 0.5; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+.chatbot-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px 12px;
+}
+.chatbot-suggestions button {
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.chatbot-suggestions button:hover {
+  border-color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.chatbot-inputrow {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+.chatbot-inputrow input {
+  flex: 1;
+  padding: 10px 14px;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  transition: border-color 0.2s ease;
+}
+.chatbot-inputrow input:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+.chatbot-inputrow button {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue);
+  color: var(--white);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.chatbot-inputrow button:hover:not(:disabled) {
+  background: var(--blue-dark);
+  transform: scale(1.06);
+}
+.chatbot-inputrow button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .chatbot-fab {
+    left: 16px;
+    bottom: 16px;
+    width: 48px;
+    height: 48px;
+  }
+  .chatbot-panel {
+    left: 12px;
+    bottom: 76px;
+    width: calc(100vw - 24px);
+  }
+}
+
+/* --- Motion: responsive adjustments --- */
+@media (max-width: 900px) {
+  .scroll-cue {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .float-badge {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  .float-badge img {
+    width: 15px;
+    height: 15px;
+  }
+  .back-to-top {
+    right: 16px;
+    bottom: 16px;
+    width: 42px;
+    height: 42px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
@@ -1050,5 +1836,10 @@ main {
   }
   html {
     scroll-behavior: auto;
+  }
+  /* The shimmer gradient is static without animation — fall back to solid ink. */
+  .home-name {
+    background: none;
+    -webkit-text-fill-color: var(--ink);
   }
 }
