@@ -5,8 +5,8 @@ export default function Experience() {
   return (
     <Section id="experience" title="Experience" eyebrow="Where I've Worked" className="experience">
       <div className="timeline">
-        {experience.map((job) => (
-          <article className="timeline-item" key={job.company}>
+        {experience.map((job, i) => (
+          <article className="timeline-item" key={job.company} style={{ '--d': `${i * 180}ms` }}>
             <div className="timeline-marker" />
             <div className="timeline-body">
               <div className="timeline-head">
