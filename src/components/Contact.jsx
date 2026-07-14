@@ -34,7 +34,14 @@ export default function Contact() {
   }
 
   return (
-    <Section id="contact" title="Get In Touch" eyebrow="Contact" className="contact">
+    <Section
+      id="contact"
+      title="Get In Touch"
+      eyebrow="Contact"
+      num="06"
+      lead="Every good story leaves room for a next chapter — say hi."
+      className="contact"
+    >
       <div className="contact-grid">
         <div className="contact-info">
           <p>

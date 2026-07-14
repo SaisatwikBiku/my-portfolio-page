@@ -3,7 +3,14 @@ import { experience } from '../data/portfolio.js'
 
 export default function Experience() {
   return (
-    <Section id="experience" title="Experience" eyebrow="Where I've Worked" className="experience">
+    <Section
+      id="experience"
+      title="Experience"
+      eyebrow="Where I've Worked"
+      num="04"
+      lead="Where the professional habits were formed — reviews, deadlines, documentation."
+      className="experience"
+    >
       <div className="timeline">
         {experience.map((job, i) => (
           <article className="timeline-item" key={job.company} style={{ '--d': `${i * 180}ms` }}>

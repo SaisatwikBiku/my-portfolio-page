@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const GREETING = {
   role: 'model',
-  text: "Hi! I'm Sai's AI assistant. Ask me anything about his projects, skills, or background.",
+  text: "Hey there! I'm Spidy, Sai's friendly neighborhood assistant. Ask me anything about his projects, skills, or background.",
 }
 
 const suggestions = ['What has Sai built?', "What's his tech stack?", 'Is he open to opportunities?']
@@ -13,8 +13,24 @@ export default function ChatBot() {
   const [messages, setMessages] = useState([GREETING])
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
+  const [nudge, setNudge] = useState(false)
   const listRef = useRef(null)
   const inputRef = useRef(null)
+  const openRef = useRef(false)
+  openRef.current = open
+
+  // One-time nudge: a few seconds in, Spidy waves at visitors who haven't
+  // opened the chat yet, then quietly gives up.
+  useEffect(() => {
+    const show = setTimeout(() => {
+      if (!openRef.current) setNudge(true)
+    }, 4500)
+    const hide = setTimeout(() => setNudge(false), 13000)
+    return () => {
+      clearTimeout(show)
+      clearTimeout(hide)
+    }
+  }, [])
 
   // Keep the newest message in view.
   useEffect(() => {
@@ -64,9 +80,12 @@ export default function ChatBot() {
     <>
       <button
         className={`chatbot-fab ${open ? 'chatbot-fab--open' : ''}`}
-        aria-label={open ? 'Close chat' : 'Chat with my AI assistant'}
-        title={open ? 'Close chat' : 'Chat with my AI assistant'}
-        onClick={() => setOpen((v) => !v)}
+        aria-label={open ? 'Close chat' : 'Chat with Spidy, Sai’s assistant'}
+        title={open ? 'Close chat' : 'Chat with Spidy, Sai’s assistant'}
+        onClick={() => {
+          setOpen((v) => !v)
+          setNudge(false)
+        }}
       >
         {open ? (
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
@@ -80,13 +99,19 @@ export default function ChatBot() {
         )}
       </button>
 
+      {nudge && !open && (
+        <div className="chatbot-nudge" role="status">
+          Psst — I'm <strong>Spidy</strong>. Ask me anything about Sai! 🕷️
+        </div>
+      )}
+
       {open && (
-        <div className="chatbot-panel" role="dialog" aria-label="Chat with Sai's AI assistant">
+        <div className="chatbot-panel" role="dialog" aria-label="Chat with Spidy, Sai's assistant">
           <header className="chatbot-head">
             <span className="chatbot-dot" aria-hidden="true" />
             <div>
-              <strong>Sai's AI Assistant</strong>
-              <p>Powered by Gemini</p>
+              <strong>Spidy</strong>
+              <p>Sai's assistant · Powered by Gemini</p>
             </div>
           </header>
 
@@ -100,7 +125,7 @@ export default function ChatBot() {
               </div>
             ))}
             {busy && (
-              <div className="chatbot-msg chatbot-msg--bot chatbot-typing" aria-label="Assistant is typing">
+              <div className="chatbot-msg chatbot-msg--bot chatbot-typing" aria-label="Spidy is typing">
                 <span />
                 <span />
                 <span />
