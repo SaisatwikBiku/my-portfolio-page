@@ -40,7 +40,16 @@ export default function Footer() {
       </div>
       <p className="footer-copy">
         © {new Date().getFullYear()} {profile.name} ·{' '}
-        <a href={site.url}>{site.domain}</a> · Built with React &amp; Vite · Spidy keeps watch 🕷️
+        <a href={site.url}>{site.domain}</a> · Built with React &amp; Vite · Spidy keeps watch{' '}
+        <button
+          type="button"
+          className="footer-spider"
+          aria-label="Say hi to Spidy"
+          title="Say hi to Spidy"
+          onClick={() => window.dispatchEvent(new Event('spidey:egg'))}
+        >
+          🕷️
+        </button>
       </p>
     </footer>
   )
