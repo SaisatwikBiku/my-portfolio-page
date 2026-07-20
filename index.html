@@ -10,6 +10,8 @@
       try {
         document.documentElement.dataset.theme =
           localStorage.getItem('theme') === 'light' ? 'light' : 'dark'
+        document.documentElement.dataset.spidey =
+          localStorage.getItem('spidey') === 'on' ? 'on' : 'off'
       } catch (e) {
         /* localStorage unavailable — keep the dark default */
       }

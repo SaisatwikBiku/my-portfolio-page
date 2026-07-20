@@ -12,6 +12,7 @@ import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import BackToTop from './components/BackToTop.jsx'
 import ChatBot from './components/ChatBot.jsx'
+import SpideyEgg from './components/SpideyEgg.jsx'
 
 // Section order tells a story: who I am → what I work with → what I've built
 // (proof first) → where the habits were formed → the foundation → say hi.
@@ -34,6 +35,7 @@ export default function App() {
       <Footer />
       <BackToTop />
       <ChatBot />
+      <SpideyEgg />
     </>
   )
 }

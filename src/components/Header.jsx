@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { profile, navLinks, site } from '../data/portfolio.js'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
 import ThemeToggle from './ThemeToggle.jsx'
+import SpideyToggle from './SpideyToggle.jsx'
 
 const sectionIds = navLinks.map((link) => link.href.slice(1))
 
@@ -50,6 +51,7 @@ export default function Header() {
       </nav>
 
       <div className="header-tools">
+        <SpideyToggle />
         <ThemeToggle />
         <button
           className={`hamburger ${open ? 'active' : ''}`}

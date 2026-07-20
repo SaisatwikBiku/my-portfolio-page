@@ -25,6 +25,14 @@
   --radius-sm: 10px;
   --max: 1140px;
   --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /* Spider-Man layer. --accent is the interactive accent (buttons, links,
+     cursor web); it tracks --blue by default and flips to red in Spidey mode.
+     --web-line is the faint filament colour for the cursor trail + scroll web. */
+  --spidey-red: #e11d2a;
+  --spidey-red-dark: #b3121d;
+  --accent: var(--blue);
+  --accent-dark: var(--blue-dark);
+  --web-line: rgba(15, 23, 38, 0.18);
   color-scheme: light;
 }
 
@@ -47,7 +55,29 @@
   --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5);
   --shadow-blue: 0 14px 36px rgba(0, 123, 255, 0.28);
+  --spidey-red: #ff3b4e;
+  --spidey-red-dark: #d81f31;
+  --web-line: rgba(232, 238, 252, 0.16);
   color-scheme: dark;
+}
+
+/* Spider-Man mode — an opt-in overlay on top of light or dark, toggled by the
+   header spider button (data-spidey="on" on <html>) and persisted like the
+   theme. It fully commits: the site's whole blue accent palette is repointed to
+   Spidey red, and blue is deliberately reintroduced at a few signature spots
+   (the hero name sweep, the photo ring) for the classic red-and-blue suit look,
+   over a faint web-lattice background. */
+:root[data-spidey='on'] {
+  --spidey-blue: #2f7bff;
+  --blue: var(--spidey-red);
+  --blue-dark: color-mix(in srgb, var(--spidey-red) 65%, #ffffff);
+  --blue-darker: var(--spidey-red-dark);
+  --accent: var(--spidey-red);
+  --accent-dark: var(--spidey-red-dark);
+  --shadow-blue: 0 14px 36px rgba(225, 29, 42, 0.3);
+}
+:root[data-spidey='on'][data-theme='dark'] {
+  --spidey-blue: #4f9bff;
 }
 
 * {
@@ -106,12 +136,12 @@ a {
 }
 
 .btn--primary {
-  background: var(--blue);
+  background: var(--accent);
   color: var(--white);
   box-shadow: var(--shadow-blue);
 }
 .btn--primary:hover {
-  background: var(--blue-dark);
+  background: var(--accent-dark);
   transform: translateY(-2px);
 }
 .btn--primary:disabled {
@@ -122,11 +152,11 @@ a {
 
 .btn--ghost {
   background: transparent;
-  color: var(--blue);
-  border-color: var(--blue);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 .btn--ghost:hover {
-  background: var(--blue);
+  background: var(--accent);
   color: var(--white);
   transform: translateY(-2px);
 }
@@ -1217,17 +1247,68 @@ main {
 }
 
 /* --- Scroll progress bar --- */
-.scroll-progress {
+/* Web-swing scroll progress: a web-textured line with a little spider that
+   rappels along the leading edge as you scroll. */
+.scroll-web {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, var(--blue), #52a7ff);
-  transform-origin: left;
-  transform: scaleX(0);
   z-index: 300;
   pointer-events: none;
+}
+.scroll-web-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    color-mix(in srgb, var(--accent) 45%, #ffffff)
+  );
+}
+/* Faint diagonal web cross-hatch riding on top of the fill. */
+.scroll-web-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -60deg,
+    transparent 0 5px,
+    var(--web-line) 5px 6px
+  );
+  opacity: 0.7;
+}
+.scroll-web-spider {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  color: var(--accent);
+  transform: translateX(-50%);
+  /* No positional transition — the spider must track the scroll exactly rather
+     than easing toward each new position (which reads as lag). */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+/* The dragline the spider hangs from, connecting it up to the web line. */
+.scroll-web-spider::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 6px;
+  background: var(--web-line);
+}
+.scroll-web-spider svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-web-fill::after {
+    display: none;
+  }
 }
 
 /* --- Nav: animated underline + scrollspy active state --- */
@@ -2068,6 +2149,160 @@ main {
   }
 }
 
+/* ============================================================
+   Spider-Man layer — web-shooter cursor, Spidey toggle, Easter egg
+   ============================================================ */
+
+/* Faint web lattice washed across the background in Spidey mode — two crossing
+   sets of filaments read as webbing. Fixed so it stays put while scrolling; the
+   page/section backgrounds sit on top, so it shows through the open hero. */
+:root[data-spidey='on'] body {
+  background-image:
+    repeating-linear-gradient(60deg, transparent 0 37px, var(--web-line) 37px 38px),
+    repeating-linear-gradient(-60deg, transparent 0 37px, var(--web-line) 37px 38px);
+  background-attachment: fixed;
+}
+
+/* Signature red-and-blue: the hero name sweeps red → blue, and the photo ring
+   becomes a red-to-blue suit gradient. Everything else is Spidey red. */
+:root[data-spidey='on'] .home-name {
+  background: linear-gradient(
+    100deg,
+    var(--ink) 0%,
+    var(--ink) 32%,
+    var(--spidey-red) 44%,
+    var(--spidey-blue) 56%,
+    var(--ink) 68%,
+    var(--ink) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+:root[data-spidey='on'] .profile-photo-ring {
+  background: linear-gradient(135deg, var(--spidey-red), var(--spidey-blue));
+}
+:root[data-spidey='on'] .cursor-glow {
+  background: radial-gradient(circle, rgba(255, 59, 78, 0.16), transparent 65%);
+}
+:root[data-spidey='on'][data-theme='light'] .cursor-glow {
+  background: radial-gradient(circle, rgba(225, 29, 42, 0.08), transparent 65%);
+}
+
+/* Full-screen canvas the cursor "thwip" trail is drawn onto. Desktop only;
+   the component keeps it off for touch + reduced-motion. */
+.cursor-web-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Header spider button that flips Spidey accent mode. Inherits the round
+   .theme-toggle chrome; lights up red when active. */
+.spidey-toggle.is-on {
+  border-color: var(--spidey-red);
+  color: var(--spidey-red);
+  background: color-mix(in srgb, var(--spidey-red) 12%, var(--surface));
+}
+.spidey-toggle:hover {
+  border-color: var(--spidey-red);
+  color: var(--spidey-red);
+}
+
+/* The footer spider is a real button (triggers the Easter egg) but should look
+   like the inline emoji it replaced. */
+.footer-spider {
+  background: none;
+  border: 0;
+  padding: 0 2px;
+  font: inherit;
+  cursor: pointer;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+.footer-spider:hover {
+  transform: translateY(-2px) rotate(-12deg);
+}
+
+/* Easter egg: web lines shoot in from the corners, then a suit-quote toast. */
+.spidey-egg {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  pointer-events: none;
+  overflow: hidden;
+}
+.spidey-egg svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.spidey-egg .web-stroke {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  /* Keep the line width constant on screen despite the stretched viewBox. */
+  vector-effect: non-scaling-stroke;
+  opacity: 0.7;
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  animation: web-shoot 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+@keyframes web-shoot {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.spidey-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translate(-50%, 20px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(90vw, 460px);
+  padding: 13px 22px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 14.5px;
+  text-align: left;
+  box-shadow: var(--shadow-md);
+  z-index: 401;
+  opacity: 0;
+  /* One self-contained timeline (in → hold → out) so overlapping triggers
+     can't desync a separate fade-out animation. */
+  animation: spidey-toast 3.9s ease forwards;
+}
+.spidey-toast span[aria-hidden] {
+  font-size: 18px;
+  line-height: 1;
+}
+@keyframes spidey-toast {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  10%,
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
@@ -2080,5 +2315,13 @@ main {
   .home-name {
     background: none;
     -webkit-text-fill-color: var(--ink);
+  }
+  /* Easter egg stays readable without motion: show the webs drawn, toast static. */
+  .spidey-egg .web-stroke {
+    stroke-dashoffset: 0;
+  }
+  .spidey-toast {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 }
