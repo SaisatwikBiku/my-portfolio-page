@@ -60,8 +60,20 @@ export default function IntroTakeover() {
     exited.current = true
     setLeaving(true)
     setTimeout(() => {
-      document.body.style.overflow = ''
-      setActive(false)
+      setActive(false) // unmount → effect cleanup restores body overflow
+      // Land on the hero (top). The scroll gesture that dismissed the intro can
+      // still have momentum when the page unlocks — block scrolling briefly so
+      // it doesn't carry the page down into the About section.
+      const toTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+      const block = (e) => e.preventDefault()
+      toTop()
+      window.addEventListener('wheel', block, { passive: false })
+      window.addEventListener('touchmove', block, { passive: false })
+      setTimeout(() => {
+        window.removeEventListener('wheel', block)
+        window.removeEventListener('touchmove', block)
+        toTop()
+      }, 500)
     }, 700)
   }
 
@@ -85,21 +97,36 @@ export default function IntroTakeover() {
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    // Lock the page firmly. overflow:hidden on <body> alone is unreliable (the
+    // real scroller is <html>), so lock both AND preventDefault on the gestures
+    // we read — otherwise the dismiss scroll scrolls the page beneath the fixed
+    // overlay and it's revealed parked on a lower section instead of the hero.
+    document.documentElement.style.overflow = 'hidden'
     document.body.style.overflow = 'hidden'
 
-    const onWheel = (e) => { if (Math.abs(e.deltaY) > 4) advance() }
-    const onTouch = () => advance()
-    const onKey = (e) => {
-      if (['ArrowDown', 'PageDown', 'End', ' ', 'Spacebar', 'Enter'].includes(e.key)) advance()
+    const onWheel = (e) => {
+      e.preventDefault()
+      if (Math.abs(e.deltaY) > 4) advance()
     }
-    window.addEventListener('wheel', onWheel, { passive: true })
-    window.addEventListener('touchmove', onTouch, { passive: true })
+    const onTouch = (e) => {
+      e.preventDefault()
+      advance()
+    }
+    const onKey = (e) => {
+      if (['ArrowDown', 'PageDown', 'End', ' ', 'Spacebar', 'Enter'].includes(e.key)) {
+        e.preventDefault()
+        advance()
+      }
+    }
+    window.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('touchmove', onTouch, { passive: false })
     window.addEventListener('keydown', onKey)
 
     return () => {
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('touchmove', onTouch)
       window.removeEventListener('keydown', onKey)
+      document.documentElement.style.overflow = ''
       document.body.style.overflow = ''
     }
   }, [])
