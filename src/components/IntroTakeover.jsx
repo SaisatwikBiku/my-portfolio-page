@@ -54,13 +54,21 @@ export default function IntroTakeover() {
   const busy = useRef(false) // brief cooldown so one gesture can't skip a step
   const exited = useRef(false)
   const contentRef = useRef(null)
+  const teardown = useRef(null) // removes the scroll-locking listeners on exit
 
   const exit = () => {
     if (exited.current) return
     exited.current = true
     setLeaving(true)
     setTimeout(() => {
-      setActive(false) // unmount → effect cleanup restores body overflow
+      // Unlock scrolling + remove the scroll-locking listeners here directly —
+      // the component returns null rather than unmounting, so the effect cleanup
+      // does NOT run. Without this, onWheel/onTouch keep preventDefault-ing and
+      // the mouse wheel stays dead (only the scrollbar would work).
+      teardown.current?.()
+      document.documentElement.style.overflow = ''
+      document.body.style.overflow = ''
+      setActive(false)
       // Land on the hero (top). The scroll gesture that dismissed the intro can
       // still have momentum when the page unlocks — block scrolling briefly so
       // it doesn't carry the page down into the About section.
@@ -122,10 +130,15 @@ export default function IntroTakeover() {
     window.addEventListener('touchmove', onTouch, { passive: false })
     window.addEventListener('keydown', onKey)
 
-    return () => {
+    const removeListeners = () => {
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('touchmove', onTouch)
       window.removeEventListener('keydown', onKey)
+    }
+    teardown.current = removeListeners
+
+    return () => {
+      removeListeners()
       document.documentElement.style.overflow = ''
       document.body.style.overflow = ''
     }
