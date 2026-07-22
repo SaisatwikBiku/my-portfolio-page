@@ -17,6 +17,14 @@ export default function ThemeToggle() {
     }
   }, [theme])
 
+  // Re-sync if something else changes the theme (e.g. the intro mode picker).
+  useEffect(() => {
+    const sync = () =>
+      setTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark')
+    window.addEventListener('theme:sync', sync)
+    return () => window.removeEventListener('theme:sync', sync)
+  }, [])
+
   const next = theme === 'dark' ? 'light' : 'dark'
 
   return (

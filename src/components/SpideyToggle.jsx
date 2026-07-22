@@ -29,6 +29,13 @@ export default function SpideyToggle() {
     return () => clearTimeout(t)
   }, [welcomeKey])
 
+  // Re-sync if something else changes the mode (e.g. the intro mode picker).
+  useEffect(() => {
+    const sync = () => setOn(document.documentElement.dataset.spidey === 'on')
+    window.addEventListener('theme:sync', sync)
+    return () => window.removeEventListener('theme:sync', sync)
+  }, [])
+
   const toggle = () => {
     const next = !on
     setOn(next)
