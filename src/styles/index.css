@@ -2836,6 +2836,708 @@ main {
   .intro-enter { margin-top: 18px; }
 }
 
+/* ============================================================
+   The Journey — playable side-view map of every city on the résumé
+   ============================================================ */
+.journey-hud-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.journey-help {
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+.journey-help kbd,
+.journey-prompt kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.journey-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+.journey-progress-track {
+  width: 116px;
+  height: 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  overflow: hidden;
+}
+.journey-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, var(--white)), var(--accent));
+  transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.journey-progress-text {
+  white-space: nowrap;
+}
+.journey-progress-text strong {
+  color: var(--accent);
+  font-size: 16px;
+}
+
+/* ---- Viewport ---- */
+.journey-stage {
+  position: relative;
+  height: clamp(380px, 60vh, 560px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  /* A plain placeholder colour behind the world image — only ever visible for
+     an instant before world.jpg paints, since the world layer is always sized
+     to cover the whole stage. */
+  background-color: #a9cfee;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  outline: none;
+  cursor: pointer;
+  /* Kills the browser's touch panning/zoom inside the map so the on-screen
+     D-pad does not fight the page scroll. */
+  touch-action: manipulation;
+}
+.journey-stage.is-active {
+  cursor: default;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-blue);
+}
+.journey-stage:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.journey-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: #a9cfee;
+  /* Strictly 2D transforms here, and no will-change: either one promotes this
+     element to its own compositor layer at its full 2752×1536 size — tens of MB
+     of GPU memory for a surface only ~1060×560 of which is ever visible.
+     Unpromoted, the browser rasterizes just the slice inside the stage. */
+}
+
+.jw-route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+/* Deliberately static: stroke-dashoffset is not a compositable property, so
+   animating it would repaint this 2600×1760 SVG on every frame. The dashes read
+   as a route perfectly well without crawling. */
+.jw-route polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linejoin: round;
+  stroke-dasharray: 16 14;
+  opacity: 0.45;
+}
+
+/* ---- Chapter markers ---- */
+.jw-marker {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.jw-marker-pin {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-left: -23px;
+  border-radius: 50% 50% 50% 6px;
+  background: var(--surface);
+  border: 2.5px dashed var(--ink-faint);
+  color: var(--ink-faint);
+  transform: rotate(-45deg);
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+.jw-marker-pin svg {
+  width: 22px;
+  height: 22px;
+  transform: rotate(45deg);
+}
+.jw-marker::after {
+  /* Footprint ring on the ground, so it is obvious where to stand. */
+  content: '';
+  position: absolute;
+  left: -34px;
+  top: -14px;
+  width: 68px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px dashed color-mix(in srgb, var(--ink-faint) 60%, transparent);
+  opacity: 0.7;
+}
+
+.jw-marker.is-found .jw-marker-pin {
+  background: var(--accent);
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--white);
+}
+.jw-marker.is-near .jw-marker-pin {
+  transform: rotate(-45deg) scale(1.16);
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 20%, transparent);
+  animation: jw-bounce 0.9s ease-in-out infinite alternate;
+}
+.jw-marker.is-near::after {
+  border-color: var(--accent);
+  opacity: 1;
+}
+@keyframes jw-bounce {
+  to {
+    transform: rotate(-45deg) scale(1.16) translate(-3px, -3px);
+  }
+}
+
+.jw-marker-chapter {
+  position: absolute;
+  left: 50%;
+  bottom: 44px;
+  margin-left: 8px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.jw-marker.is-found .jw-marker-chapter {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.jw-marker-name {
+  position: absolute;
+  left: 50%;
+  bottom: 66px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.jw-marker.is-near .jw-marker-name {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---- The character ---- */
+.jw-walker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  /* No will-change here either — promoting this would split the world's paint
+     around it and pull the oversized world onto the compositor with it. */
+}
+.jw-walker-svg {
+  position: absolute;
+  left: -34px;
+  bottom: -6px;
+  width: 68px;
+  height: 110px;
+  overflow: visible;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.4));
+}
+/* The illustration (public/walker.png, cut out and trimmed to the figure) is
+   152×360, so it needs its own box — the fallback drawing's 68×110 would
+   stretch it. Centred with left/margin rather than a transform, because the
+   walk cycle owns `transform` on this element. */
+.jw-walker-svg.wk--art {
+  left: 0;
+  bottom: -4px;
+  width: 46px;
+  height: 110px;
+  /* .jw-walker is a zero-size anchor, so the global `img { max-width: 100% }`
+     would resolve to 0 and collapse the sprite. */
+  max-width: none;
+  margin-left: -23px;
+  transform-origin: 50% 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.jw-shadow {
+  position: absolute;
+  left: -20px;
+  top: 2px;
+  width: 40px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.38), transparent 72%);
+}
+
+/* ---- Walk cycle ----
+   The sprite is a single rigid figure with the stride already in the pose, so
+   nothing here rotates a limb. Instead the whole body takes a two-beat gait:
+   it rises between footfalls, drops and squashes on each one, and rocks a
+   degree and a half either side of vertical. Two footfalls per 0.5s cycle is
+   roughly the cadence of the 0.24 px/ms walk speed, so it does not look like
+   the character is skating.
+
+   Origin is the feet, and the transform composes under the parent's
+   scaleX(±1) — the rock mirrors correctly when walking left. */
+.wk {
+  transform-origin: 50% 94%;
+}
+.jw-walker .wk {
+  animation: wk-idle 3.6s ease-in-out infinite;
+}
+.jw-walker.is-walking .wk {
+  animation: wk-step 0.5s linear infinite;
+}
+/* Standing still: just breathing, so the character never looks frozen. */
+@keyframes wk-idle {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-0.7px) scaleY(1.008); }
+}
+@keyframes wk-step {
+  0% { transform: translateY(0) rotate(-1.5deg) scale(1.015, 0.985); }
+  12% { transform: translateY(-2px) rotate(-0.7deg) scale(1, 1); }
+  25% { transform: translateY(-3.4px) rotate(0deg) scale(0.99, 1.012); }
+  38% { transform: translateY(-2px) rotate(0.7deg) scale(1, 1); }
+  50% { transform: translateY(0) rotate(1.5deg) scale(1.015, 0.985); }
+  62% { transform: translateY(-2px) rotate(0.7deg) scale(1, 1); }
+  75% { transform: translateY(-3.4px) rotate(0deg) scale(0.99, 1.012); }
+  88% { transform: translateY(-2px) rotate(-0.7deg) scale(1, 1); }
+  100% { transform: translateY(0) rotate(-1.5deg) scale(1.015, 0.985); }
+}
+/* The shadow runs counter-phase: tight and dark on the footfall, wide and faint
+   at the top of the bounce. It is what sells the bounce as weight. */
+.jw-walker.is-walking .jw-shadow {
+  animation: wk-shadow 0.5s linear infinite;
+}
+@keyframes wk-shadow {
+  0%, 50%, 100% { transform: scale(1); opacity: 1; }
+  25%, 75% { transform: scale(0.84); opacity: 0.6; }
+}
+
+/* ---- Minimap ----
+   Reads the position the loop already tracks, so a 2752×1536 world seen one
+   ~1060×560 slice at a time stays navigable. Its background is a small copy of
+   the same illustration (public/map/world-mini.jpg), so it reads as an actual
+   map rather than a schematic. */
+.journey-minimap {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 136px;
+  aspect-ratio: 2752 / 1536;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: url(/map/world-mini.jpg) center / cover no-repeat;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  pointer-events: none;
+}
+.journey-minimap svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.journey-minimap .jw-mini-route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 22;
+  stroke-linejoin: round;
+  opacity: 0.4;
+}
+.journey-minimap circle {
+  fill: var(--ink-faint);
+  opacity: 0.5;
+}
+.journey-minimap circle.is-found {
+  fill: var(--accent);
+  opacity: 1;
+}
+/* The only part that moves: left/top are written straight to this node by the
+   loop, in percentages of the world. */
+.journey-minimap-dot {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+/* ---- Next-chapter compass ----
+   Two elements on purpose: the outer .journey-arrow is repositioned every
+   frame by the loop (translate to the clamped edge point, rotate to the
+   heading) — a CSS animation on that same element would fight the inline
+   transform, since a running keyframe wins the cascade over inline styles.
+   The nudge animation instead lives on the inner icon, translating along its
+   own local X axis, which reads as "pointing" in the outer's rotated frame. */
+.journey-arrow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.journey-arrow-icon {
+  position: absolute;
+  left: -19px;
+  top: -19px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--white);
+  box-shadow: var(--shadow-blue);
+  animation: journey-arrow-nudge 1.1s ease-in-out infinite;
+}
+.journey-arrow-icon svg {
+  width: 20px;
+  height: 20px;
+}
+@keyframes journey-arrow-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+/* ---- Overlays ---- */
+.journey-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  backdrop-filter: blur(2px);
+  text-align: center;
+  padding: 20px;
+}
+.journey-veil-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: var(--shadow-blue);
+}
+.journey-veil-badge svg {
+  width: 22px;
+  height: 22px;
+}
+.journey-veil-sub {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.journey-prompt {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 32px);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  box-shadow: var(--shadow-md);
+  font-size: 13px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.journey-prompt strong {
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.journey-prompt-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 24%, transparent);
+  animation: jw-pulse 1.4s ease-in-out infinite;
+}
+@keyframes jw-pulse {
+  50% {
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+}
+
+.journey-card {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  width: min(400px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  overflow-y: auto;
+  padding: 18px 20px 20px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  animation: jw-card-in 0.28s ease both;
+}
+@keyframes jw-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.journey-card-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-alt);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.journey-card-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.journey-card-chapter {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.journey-card h3 {
+  margin: 4px 34px 2px 0;
+  font-size: 19px;
+  line-height: 1.25;
+}
+.journey-card-role {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.journey-card-meta {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--ink-faint);
+}
+.journey-card ul {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 7px;
+}
+.journey-card li {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.journey-card li::marker {
+  color: var(--accent);
+}
+.journey-card-cta {
+  margin-top: 14px;
+  width: 100%;
+}
+
+/* ---- Touch D-pad (coarse pointers only) ---- */
+/* Visibility is decided in JS (see JourneyMap) and carried by [hidden]. */
+.journey-pad {
+  display: grid;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+  gap: 4px;
+}
+.journey-pad-btn {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  color: var(--ink-soft);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.journey-pad-btn:active {
+  background: var(--accent);
+  color: var(--white);
+}
+.journey-pad-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.journey-pad-btn--up { grid-area: 1 / 2; }
+.journey-pad-btn--left { grid-area: 2 / 1; }
+.journey-pad-btn--right { grid-area: 2 / 3; }
+.journey-pad-btn--down { grid-area: 3 / 2; }
+
+.journey-pad[hidden] {
+  display: none;
+}
+/* The card is a full-width sheet on narrow screens — the pad would sit under it. */
+.journey-stage:has(.journey-card) .journey-pad {
+  display: none;
+}
+
+/* ---- Chapter list: the readable, no-gameplay-required path ---- */
+.journey-legend {
+  list-style: none;
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 10px;
+}
+.journey-legend-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.journey-legend-btn:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.journey-legend-btn.is-open {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-blue);
+}
+.journey-legend-num {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  color: var(--ink-faint);
+  font-size: 12px;
+  font-weight: 700;
+}
+.journey-legend-btn.is-found .journey-legend-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--white);
+}
+.journey-legend-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+}
+.journey-legend-text strong {
+  font-size: 14px;
+  line-height: 1.3;
+}
+.journey-legend-text em {
+  font-size: 12px;
+  font-style: normal;
+  color: var(--ink-faint);
+}
+.journey-legend-place {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .journey-stage {
+    height: 62vh;
+    min-height: 400px;
+  }
+  .journey-help {
+    display: none;
+  }
+  .journey-card {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    padding: 16px;
+  }
+  .journey-prompt {
+    bottom: 10px;
+    left: 10px;
+    transform: none;
+    max-width: calc(100% - 84px);
+  }
+  .journey-minimap {
+    width: 96px;
+  }
+  .journey-progress-track {
+    width: 84px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;

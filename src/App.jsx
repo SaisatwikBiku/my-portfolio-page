@@ -8,6 +8,7 @@ import Skills from './components/Skills.jsx'
 import Projects from './components/Projects.jsx'
 import Experience from './components/Experience.jsx'
 import Education from './components/Education.jsx'
+import JourneyMap from './components/JourneyMap.jsx'
 import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import BackToTop from './components/BackToTop.jsx'
@@ -31,6 +32,7 @@ export default function App() {
         <Projects />
         <Experience />
         <Education />
+        <JourneyMap />
         <Contact />
       </main>
       <Footer />
