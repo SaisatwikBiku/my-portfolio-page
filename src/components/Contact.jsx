@@ -38,7 +38,7 @@ export default function Contact() {
       id="contact"
       title="Get In Touch"
       eyebrow="Contact"
-      num="06"
+      num="07"
       lead="Every good story leaves room for a next chapter — say hi."
       className="contact"
     >

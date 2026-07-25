@@ -23,5 +23,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
     plugins: [react(), localApiRoutes(env)],
+    // Honour PORT when something else assigns one (tooling, a second dev
+    // server); otherwise Vite's usual 5173.
+    server: { port: Number(process.env.PORT) || 5173 },
   }
 })
