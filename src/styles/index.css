@@ -3417,6 +3417,16 @@ main {
   color: var(--ink-soft);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  /* A held D-pad button is exactly what a phone's long-press gesture
+     recognizer looks for — the callout/magnifier (iOS) or text-selection
+     (Android) kicks in around 500ms and fires pointercancel, releasing the
+     direction and stopping the character mid-walk. These three rules opt the
+     button out of every one of those native gestures so a hold is just a
+     hold, however long it lasts. */
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .journey-pad-btn:active {
   background: var(--accent);
@@ -3425,6 +3435,10 @@ main {
 .journey-pad-btn svg {
   width: 20px;
   height: 20px;
+  /* Keeps the button itself as the sole pointer-event target for the whole
+     press — the icon can never become the target mid-gesture and confuse
+     the down/up pairing. */
+  pointer-events: none;
 }
 .journey-pad-btn--up { grid-area: 1 / 2; }
 .journey-pad-btn--left { grid-area: 2 / 1; }
