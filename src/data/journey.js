@@ -1,72 +1,42 @@
-// The Journey map — an explorable top-down world built around a single
-// hand-illustrated background (public/map/world.jpg): one AI-generated map
-// image covering the whole journey — Chandigarh, New Delhi, Hyderabad, the
-// ocean crossing, and Albany — in one consistent art style, rather than dozens
-// of separately-generated landmark pieces that never quite matched each other.
+// The Journey map — content and layout for the playable world.
 //
-// Because the art is a single flat image now, walkability isn't authored as a
-// handful of rectangles — it's read directly off the picture. WALKABLE_GRID is
-// a coarse (16px-per-cell) land/water mask baked out of the actual pixels of
-// world.jpg (see the processing notes below), packed as base64 for size. Land,
-// roads, and the pier/stepping-stones crossing all came out walkable
-// automatically; only the ocean itself blocks movement.
+// There is no map image any more. The world is generated: src/lib/journeyWorld.js
+// grows a coastline, forests, beaches, towns and roads from these coordinates
+// and a seeded noise field, and src/lib/journeyPaint.js paints it. That means
+// the map inherits the site's theme (light, dark, and Spidey mode all repaint),
+// costs one small JS module instead of a multi-megabyte JPEG, and can be tuned
+// by moving a number rather than regenerating art.
 //
-// Every date and title in PLACES is quoted from the résumé and the internship
-// / experience letters, so the map stays factual even though the world is
-// stylised. Coordinates were placed by eye against the generated map, then
-// snapped to the nearest walkable cell.
+// This file stays deliberately dumb: constants, and the eight chapters. Every
+// date and title in PLACES is quoted from the résumé and the internship /
+// experience letters, so the map stays factual even though the world is
+// stylised.
 
-export const WORLD = { w: 2752, h: 1536 }
+export const WORLD = { w: 2500, h: 1500 }
 
-// Coarse walkability mask: 172 × 96 cells, 16 world-px each. `bits` is those
-// 16,512 cells packed one-bit-per-cell and base64-encoded. Decoded once at
-// module load into a Uint8Array so `isWalkable` is an O(1) lookup per corner,
-// same cost as the old rect-list scan but accurate to the actual coastline
-// instead of a hand-fitted rectangle approximation of it.
-const GRID_W = 172
-const GRID_H = 96
-const GRID_CELL = 16
-const GRID_BITS_B64 =
-  '////////////HwAAAAAAAAAAAAAA8P///////////wEAAAAAAAAAAAAAAP///////////x8AAAAAAAAAAAAAAPD///////////8BAAAAAAAAAAAAAAD///////////8f+AEAAAAAAAAAAADw////////////gB8AAAAAAAAAAAAA////////////j/8fAAAAAAAAAAAA8P////////////j/BwAAAAAAAAAAAP///////////9///wAAAAAAAAAAAPD//////////////w8AAAAAAAAAAAD///////////////gAAAAAAAAAwB/w////////////fwAAAAAAAAACAPwP/////////////wAAAAAAAAAgAMD/8f///////////x8AAAAAAAAABgD8H/////////////8BAAAAAAAAcDDM//H///////////8/AAAAAAAAgB/D/B//////////////BwAAAAAAAPw53P/x/////////////wAAAAAAAMCf//3//////////////w8AAAAAAAD8//////////////////8AAAAAAADA//////////////////8PAAAAAAAA/P//////////////////AAAAAAAA4P//////////////////DwAAAAAAAP//////////////////fwAAAAAAAP7//////////////////wcAAAAAAPD//////////////////38AAAAAAID///////////////////8/AAAAAAD8////////////////////AwAAAADg////////////////////PwAAAAAA/v///////////////////wMAAAAA4P///////////////////z8AAAAAAP7///////////////////8DAAAAAOD///////////////////8fAAAAAAD+////////////////////AAAAAADg////////////////////DwAAAAAA/////////////////////wEAAAAA+P///////////////////x8AAAAAwP////////////////////8DAAAAAPz///////////////////8/AAAAAOD/////////////////////AwAAAAD+////////////////////fwAAAADw/////////////////////wcAAAAA/////////////////////38AAAAA8P////////////////////8HAAAAAP////////////////////9/AAAAAPD/////////////////////BwAAAAD/////////////////////PwAAAADg/////////////////////wMAAAAA/P///////////////////x8AAAAAwP////////////////////8AAAAAAPz///////////////////8HAAAAAID///////////////////9/AAAAAADw////////////////////AwAAAAAA////////////////////PwAAAAAA8P//nz///////////////wEAAAAAAP7//////////////////x8AAAAAAOD///////////////////8AAAAAIAD///////////////////8XAAAAAILw////////////////////AwAAAHCI/////////3//////////PwAAAIDP///////////3/////////wcAAAD4/f///////99//////////z8AAACA////////////9/////////8DAAAA/P//////////f/////////9/AAAAwP////////////f/////////BwAAAPz//////////3///////////wAAAMD////////////3/////////w8AAAD8//////////9///////////8AAADg////////////9/////////8PAAAA////////////f///////////AAAA8P//////////////////////BwAAgP//////////////////////BwAAAPj/////////////////////DwAAAID//////////z/+////////fwAAAAD4//////////8A/v///////wcAAACA/////////w8AgP///////z8AAAAA+P////////8AAMD///////8DAAwAgP////////8PAAD8//////////8fAPj/////////AADA////////////D/z/////////DwAA/P////////8H/v///////////wAAwP////////8HAP///////////w8AAPj//////09mAAD///////////8AAAD//////z8AAAAA/v////////8PAADA//////8BAAAA4P//////////AAAA+P////8PAAAAAP7/////////DwAAAP////9/AAAAAOD//////////wAAAOD/////BwAAAAD+/////////w8AAAD+////PwAAAABg/v////////8AAADw/////wEAAAAAgP////////8PAAAA/////wMAAAAAAPj/////////AAAA/P///wcAAAAAAID/////////DwAA8P///z8AAAAAAADw/////////wAAAP////8BAAAAAAAA/////////w8AAPj///8HAAAAAAAA8P////////8AAMD///8PAAAAAAAAAP7///////8PAAD+//9/AAAAAAAAAOD/////////'
+// Grid resolution for terrain and collision. 20 world px per cell → 125 × 75.
+export const TILE = 20
 
-function decodeGrid(b64, cellCount) {
-  const bin = atob(b64)
-  const bytes = new Uint8Array(bin.length)
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
-  const bits = new Uint8Array(cellCount)
-  for (let i = 0; i < cellCount; i++) {
-    bits[i] = (bytes[i >> 3] >> (i & 7)) & 1
-  }
-  return bits
-}
-
-const grid = decodeGrid(GRID_BITS_B64, GRID_W * GRID_H)
-
-// True if the world point (x, y) sits on land (or the pier/path network) in
-// the generated map, false if it's open water.
-export function isWalkable(x, y) {
-  const gx = Math.floor(x / GRID_CELL)
-  const gy = Math.floor(y / GRID_CELL)
-  if (gx < 0 || gy < 0 || gx >= GRID_W || gy >= GRID_H) return false
-  return grid[gy * GRID_W + gx] === 1
-}
-
-// Where the walker starts: beside the Charminar in Hyderabad, before any of
-// this began — close enough to read as "home turf" but far enough from every
-// marker that arriving doesn't instantly pop chapter one's card open.
-export const SPAWN = { x: 600, y: 1150 }
+// Where the walker starts: south of chapter one, on the road spur, far enough
+// from every marker that arriving doesn't instantly pop a card open.
+export const SPAWN = { x: 300, y: 1400 }
 
 // Trigger radius, in world px, for "you are standing at this place".
-export const NEAR_RADIUS = 90
+export const NEAR_RADIUS = 92
+
+// Radius of the paved town square painted under each chapter.
+export const PLAZA_R = 118
 
 export const PLACES = [
   {
     id: 'sri-indu',
     city: 'Hyderabad',
-    short: 'Sri Indu College · B.Tech',
-    x: 190, y: 940,
+    short: 'Sri Indu College',
+    x: 300, y: 1230,
     chapter: '01',
     kind: 'school',
+    region: 'in',
+    landmark: 'charminar',
     name: 'Sri Indu College of Engineering & Technology',
     org: 'JNTUH',
     role: 'B.Tech, Computer Science & Information Technology',
@@ -81,9 +51,11 @@ export const PLACES = [
     id: 'study-experts',
     city: 'New Delhi',
     short: 'StudyExperts',
-    x: 490, y: 830,
+    x: 300, y: 760,
     chapter: '02',
     kind: 'work',
+    region: 'in',
+    landmark: 'archgate',
     name: 'StudyExperts',
     org: 'Mohan Garden, Uttam Nagar',
     role: 'Programming Content Intern',
@@ -99,9 +71,11 @@ export const PLACES = [
     id: 'rethink-ux',
     city: 'Chandigarh',
     short: 'Rethink UX',
-    x: 624, y: 290,
+    x: 620, y: 300,
     chapter: '03',
     kind: 'work',
+    region: 'in',
+    landmark: 'studio',
     name: 'Rethink UX',
     org: 'Sector 37-D',
     role: 'Website Design Intern',
@@ -117,10 +91,12 @@ export const PLACES = [
   {
     id: 'real-craft-1',
     city: 'Chandigarh',
-    short: 'Real Craft Tech · Ops',
-    x: 1000, y: 300,
+    short: 'Real Craft · Ops',
+    x: 900, y: 430,
     chapter: '04',
     kind: 'work',
+    region: 'in',
+    landmark: 'tower',
     name: 'Real Craft Tech',
     org: 'Rethink UX’s parent company',
     role: 'Customer Operations & Marketing Executive',
@@ -135,10 +111,12 @@ export const PLACES = [
   {
     id: 'real-craft-2',
     city: 'Chandigarh',
-    short: 'Real Craft Tech · EA',
-    x: 224, y: 470,
+    short: 'Real Craft · EA',
+    x: 830, y: 800,
     chapter: '05',
     kind: 'work',
+    region: 'in',
+    landmark: 'annex',
     name: 'Real Craft Tech',
     org: 'Third stint, same team',
     role: 'Executive Assistant',
@@ -154,9 +132,11 @@ export const PLACES = [
     id: 'crossing',
     city: 'Hyderabad → Albany',
     short: 'The Crossing',
-    x: 1400, y: 1240,
+    x: 1225, y: 880,
     chapter: '06',
     kind: 'travel',
+    region: 'sea',
+    landmark: 'signpost',
     name: 'The Crossing',
     org: 'Hyderabad → Albany',
     role: 'One-way ticket',
@@ -171,9 +151,11 @@ export const PLACES = [
     id: 'ualbany',
     city: 'Albany, NY',
     short: 'University at Albany',
-    x: 2490, y: 750,
+    x: 1780, y: 640,
     chapter: '07',
     kind: 'school',
+    region: 'us',
+    landmark: 'campus',
     name: 'University at Albany, SUNY',
     org: 'State University of New York',
     role: 'M.S. Computer Science (Systems) · GPA 3.5',
@@ -189,9 +171,11 @@ export const PLACES = [
     id: 'now',
     city: 'Albany, NY',
     short: 'You Are Here',
-    x: 2390, y: 420,
+    x: 2120, y: 330,
     chapter: '08',
     kind: 'now',
+    region: 'us',
+    landmark: 'home',
     name: 'You Are Here',
     org: 'Albany, NY',
     role: 'Software Engineer — open to work',
@@ -203,4 +187,20 @@ export const PLACES = [
     ],
     cta: true,
   },
+]
+
+// The road network, as polylines through the chapters in story order. The first
+// entry is the spur from the spawn point, so the player always starts on a path
+// that leads somewhere; the `bridge` segment is the one stretch of road that
+// runs over open water, and is both painted and collided with differently.
+export const ROADS = [
+  { pts: [[300, 1400], [300, 1320], [300, 1230]] },
+  { pts: [[300, 1230], [250, 1080], [292, 930], [300, 760]] },
+  { pts: [[300, 760], [360, 600], [480, 420], [620, 300]] },
+  { pts: [[620, 300], [760, 326], [860, 388], [900, 430]] },
+  { pts: [[900, 430], [944, 546], [898, 664], [830, 800]] },
+  { pts: [[830, 800], [906, 842], [1000, 872]] },
+  { pts: [[1000, 872], [1225, 880], [1460, 886]], bridge: true },
+  { pts: [[1460, 886], [1596, 802], [1698, 706], [1780, 640]] },
+  { pts: [[1780, 640], [1898, 538], [2004, 430], [2120, 330]] },
 ]
