@@ -7,7 +7,7 @@ export default function Education() {
       id="education"
       title="Education"
       eyebrow="Background"
-      num="05"
+      num="03"
       lead="The foundation everything above stands on."
       className="education"
     >

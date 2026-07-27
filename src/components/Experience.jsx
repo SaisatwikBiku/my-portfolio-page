@@ -7,7 +7,7 @@ export default function Experience() {
       id="experience"
       title="Experience"
       eyebrow="Where I've Worked"
-      num="04"
+      num="06"
       lead="Where the professional habits were formed — reviews, deadlines, documentation."
       className="experience"
     >

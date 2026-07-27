@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { profile } from '../data/portfolio.js'
 
-// What the avatar promises visitors — mirrors the site's sections, in order.
+// What the avatar promises visitors — mirrors the site's pages, in order.
 const OVERVIEW = [
-  { icon: '🧑‍💻', label: 'Who I am' },
-  { icon: '🛠️', label: 'Skills & tooling' },
-  { icon: '🚀', label: "Projects I've built" },
-  { icon: '💼', label: 'Experience' },
+  { icon: '🧑‍💻', label: 'About — who I am' },
+  { icon: '🛠️', label: 'Skills & education' },
+  { icon: '🚀', label: "Work — what I've built" },
+  { icon: '📄', label: 'Published research' },
   { icon: '🎮', label: 'My journey — playable' },
-  { icon: '✉️', label: 'Say hello' },
+  { icon: '✉️', label: 'Contact — say hello' },
 ]
 
 // The three ways to experience the site. Each card previews its palette and,

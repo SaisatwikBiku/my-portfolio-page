@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import Section from './Section.jsx'
 import CrossingMap from './CrossingMap.jsx'
 import { WORLD, SPAWN, NEAR_RADIUS, PLACES } from '../data/journey.js'
@@ -652,7 +653,7 @@ export default function JourneyMap() {
       id="journey"
       title="The Journey"
       eyebrow="Playable"
-      num="06"
+      num="07"
       lead="Four cities, multiple experiences, one very long flight — walk it yourself."
       className="journey"
     >
@@ -764,9 +765,9 @@ export default function JourneyMap() {
                 {openPlaceData.notes.map((n) => <li key={n}>{n}</li>)}
               </ul>
               {openPlaceData.cta && (
-                <a className="btn btn--primary journey-card-cta" href="#contact" onClick={() => full && toggleFull()}>
+                <Link className="btn btn--primary journey-card-cta" to="/contact" onClick={() => full && toggleFull()}>
                   Get in touch
-                </a>
+                </Link>
               )}
             </div>
           )}

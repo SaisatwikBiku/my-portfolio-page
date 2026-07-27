@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { profile, socials, navLinks, site } from '../data/portfolio.js'
 
 // Inline single-path brand glyphs, keyed by social name. Devicon's colored
@@ -16,12 +17,12 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <a href="#home" className="logo">{site.domain}</a>
+          <Link to="/" className="logo">{site.domain}</Link>
           <p>{profile.name} · {profile.role}</p>
         </div>
         <nav className="footer-nav">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href}>{link.label}</a>
+            <Link key={link.to} to={link.to}>{link.label}</Link>
           ))}
         </nav>
         <div className="footer-socials">

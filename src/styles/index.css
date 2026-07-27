@@ -88,13 +88,21 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  /* Clears the fixed header (78px) plus the sticky in-page sub-nav (~58px) so an
+     anchored section's heading lands below both instead of behind them. */
+  scroll-padding-top: 150px;
   /* Clip horizontal overflow at the root. Required because the off-canvas mobile
      menu is position:fixed and sits off-screen to the right — fixed elements are
      positioned against the viewport, so body's overflow-x:hidden can't contain
      them. Clipping on <html> is what actually prevents the sideways scroll.
      (overflow only establishes a containing block for *absolute* descendants,
-     not fixed ones, so this does not affect the off-canvas drawer's sizing.) */
+     not fixed ones, so this does not affect the off-canvas drawer's sizing.)
+
+     Deliberately NOT repeated on <body>: any overflow value other than `visible`
+     makes that element the nearest scrollport for its descendants, which silently
+     breaks `position: sticky` inside it (the sub-nav would scroll away instead of
+     sticking, because body's own scrollport never scrolls — <html> is the one
+     that does). Clipping here alone gives the same protection without that cost. */
   overflow-x: hidden;
 }
 
@@ -103,7 +111,6 @@ body {
   background: var(--bg);
   color: var(--ink);
   line-height: 1.6;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -233,6 +240,7 @@ a {
   color: var(--white);
 }
 
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -299,6 +307,358 @@ main {
   font-size: clamp(28px, 5vw, 40px);
   font-weight: 800;
   letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   Page chrome: sub-nav, "continue reading" link, 404
+   ============================================================ */
+.page-subnav {
+  position: sticky;
+  /* The header shrinks 74px → 62px once scrolled (.header--scrolled), and this
+     bar only ever sticks while scrolled — so pin it to the compact height to sit
+     flush instead of leaving a strip of content showing between the two. The
+     header's scrolled threshold is tuned to trip just before this sticks. */
+  top: 62px;
+  z-index: 60;
+  margin-top: 74px;
+  background: var(--header-bg-solid);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.page-subnav-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 10px clamp(20px, 6vw, 40px);
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  /* Scrolls sideways rather than wrapping to a second row on narrow screens, so
+     the sticky bar's height never changes as the viewport shrinks. */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.page-subnav-inner::-webkit-scrollbar {
+  display: none;
+}
+.page-subnav a {
+  flex: none;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.page-subnav a:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.page-subnav a.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+}
+
+/* The "next chapter" hand-off at the foot of a page — the multi-page stand-in
+   for what used to be one continuous scroll. */
+.page-next {
+  max-width: var(--max);
+  margin: 0 auto 96px;
+  padding: 0 clamp(20px, 6vw, 40px);
+}
+.page-next a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.page-next a:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--blue) 40%, transparent);
+}
+.page-next-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+.page-next-title {
+  display: block;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.page-next-blurb {
+  display: block;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+.page-next-arrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 19px;
+  transition: transform 0.22s ease;
+}
+.page-next a:hover .page-next-arrow {
+  transform: translateX(4px);
+}
+
+/* Home hub: the three ways into the site, so the landing page routes visitors
+   instead of dead-ending after the hero. */
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+.explore-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 30px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.explore-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--blue) 40%, transparent);
+}
+.explore-card-num {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--blue);
+}
+.explore-card h3 {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.explore-card p {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  flex: 1;
+}
+.explore-card-go {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--blue);
+  transition: transform 0.22s ease;
+}
+.explore-card:hover .explore-card-go {
+  transform: translateX(4px);
+  display: inline-block;
+}
+
+/* Holds the fold while a code-split route streams in, so the footer doesn't
+   jump up to meet the header for a frame. */
+.route-loading {
+  min-height: 70vh;
+}
+
+/* ============================================================
+   Journey glimpse — the site-wide teaser for the playable map
+   ============================================================ */
+.glimpse {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-alt);
+}
+.glimpse-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 48px clamp(20px, 6vw, 40px);
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 40px;
+}
+.glimpse-eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+.glimpse-title {
+  font-size: clamp(22px, 3.2vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.glimpse-lead {
+  font-size: 15.5px;
+  color: var(--ink-soft);
+  margin: 10px 0 20px;
+  max-width: 46ch;
+}
+.glimpse-cta {
+  padding: 11px 24px;
+}
+
+/* The stage: a strip of "road" with markers, and the walker crossing it. */
+.glimpse-stage {
+  position: relative;
+  height: 172px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--blue) 12%, var(--surface)),
+    var(--surface)
+  );
+  overflow: hidden;
+}
+.glimpse-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 42px;
+  height: 12px;
+  background: color-mix(in srgb, var(--blue) 22%, var(--surface));
+  border-top: 2px dashed color-mix(in srgb, var(--blue) 45%, transparent);
+}
+.glimpse-marker {
+  position: absolute;
+  bottom: 48px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--blue) 22%, transparent);
+}
+.glimpse-marker--1 { left: 16%; }
+.glimpse-marker--2 { left: 50%; }
+.glimpse-marker--3 { left: 84%; }
+
+/* Motion mirrors drawWalker() in journeyPaint.js: the whole body bounces,
+   rocks slightly and squashes on the footfall — the sprite is never rigged. */
+.glimpse-walker {
+  position: absolute;
+  /* Feet land on the road strip, and the figure clears the top of the stage. */
+  bottom: 44px;
+  left: 6%;
+  width: 48px;
+  height: 110px;
+  animation: glimpse-travel 13s ease-in-out infinite;
+}
+.glimpse-walker img {
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 100%;
+  animation: glimpse-step 0.48s ease-in-out infinite;
+}
+.glimpse-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 42px;
+  height: 13px;
+  margin-left: -21px;
+  border-radius: 50%;
+  background: rgba(15, 23, 38, 0.28);
+  /* Counter-phase: tight and dark on the footfall, wide and faint at the top
+     of the bounce. It is what sells the bounce as weight. */
+  animation: glimpse-shadow 0.48s ease-in-out infinite;
+}
+:root[data-theme='dark'] .glimpse-shadow {
+  background: rgba(0, 0, 0, 0.42);
+}
+
+/* Travels in percentages of the stage rather than of its own width, so the walk
+   spans the whole road at any card size. Turns around at each end. */
+@keyframes glimpse-travel {
+  0%   { left: 6%;  transform: scaleX(1); }
+  46%  { left: 82%; transform: scaleX(1); }
+  50%  { left: 82%; transform: scaleX(-1); }
+  96%  { left: 6%;  transform: scaleX(-1); }
+  100% { left: 6%;  transform: scaleX(1); }
+}
+@keyframes glimpse-step {
+  0%, 100% { transform: translateY(0) rotate(0deg) scaleY(1); }
+  50%      { transform: translateY(-7px) rotate(1.4deg) scaleY(0.985); }
+}
+@keyframes glimpse-shadow {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(1.22); opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glimpse-walker,
+  .glimpse-walker img,
+  .glimpse-shadow {
+    animation: none;
+  }
+  .glimpse-walker {
+    left: 42%;
+  }
+}
+
+@media (max-width: 760px) {
+  .glimpse-inner {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding: 40px clamp(20px, 6vw, 40px);
+  }
+  .glimpse-stage {
+    order: -1;
+  }
+}
+
+.not-found {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding-top: 160px;
+}
+.not-found-code {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--blue);
+}
+.not-found-title {
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  max-width: 620px;
+}
+.not-found-lead {
+  color: var(--ink-soft);
+  max-width: 460px;
+  margin-bottom: 12px;
 }
 
 /* ============================================================
@@ -762,6 +1122,222 @@ main {
 }
 
 /* ============================================================
+   Research / Publications
+   A single wide "offprint" card: journal spine on the left, the paper on the
+   right. The spine collapses to a horizontal strip below 760px.
+   ============================================================ */
+.pub-list {
+  display: grid;
+  gap: 24px;
+}
+.pub-card {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.pub-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--blue) 40%, transparent);
+}
+.pub-spine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 12px;
+  text-align: center;
+  color: var(--white);
+  background: linear-gradient(160deg, var(--blue), var(--blue-darker));
+}
+.pub-spine-mark {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.pub-spine-vol,
+.pub-spine-date {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+.pub-body {
+  padding: 30px 30px 26px;
+}
+.pub-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.pub-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 4px 11px;
+  border-radius: 999px;
+}
+.pub-badge--peer {
+  color: var(--blue);
+  border-color: color-mix(in srgb, var(--blue) 35%, transparent);
+}
+.pub-title {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+.pub-venue {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue);
+  margin-top: 6px;
+}
+.pub-authors {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-top: 12px;
+}
+.pub-me {
+  font-weight: 700;
+  color: var(--ink);
+  border-bottom: 2px solid var(--blue);
+}
+.pub-affiliation {
+  font-size: 13px;
+  color: var(--ink-faint);
+  margin-top: 3px;
+}
+.pub-summary {
+  font-size: 15.5px;
+  color: var(--ink-soft);
+  margin-top: 16px;
+}
+.pub-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.pub-metric {
+  flex: 1 1 140px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  text-align: center;
+}
+.pub-metric-value {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--blue);
+}
+.pub-metric-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-faint);
+}
+
+.pub-points {
+  list-style: none;
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+}
+.pub-points li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+.pub-points li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+.pub-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.pub-keywords span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue-dark);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.pub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+.pub-actions .btn {
+  padding: 10px 22px;
+  font-size: 15px;
+}
+.pub-cite-btn {
+  min-width: 172px;
+}
+.pub-citation {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 760px) {
+  .pub-card {
+    grid-template-columns: 1fr;
+  }
+  .pub-spine {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 14px 22px;
+    text-align: left;
+  }
+  .pub-spine-mark {
+    font-size: 20px;
+  }
+  .pub-body {
+    padding: 24px 22px 22px;
+  }
+  .pub-title {
+    font-size: 20px;
+  }
+  .pub-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ============================================================
    Education + Languages
    ============================================================ */
 .education-grid {
@@ -1193,6 +1769,9 @@ main {
     gap: 10px;
   }
   .about-stat {
+    /* Four stats: pair them 2×2 rather than letting the last one wrap alone
+       into a full-width slab. */
+    flex: 1 1 calc(50% - 5px);
     min-width: 90px;
     padding: 14px 10px;
   }
@@ -1493,6 +2072,8 @@ main {
   animation: card-in 0.5s ease backwards;
   animation-delay: var(--d, 0s);
 }
+.section.is-visible .explore-card,
+.section.is-visible .pub-card,
 .section.is-visible .education-card,
 .section.is-visible .cert-card {
   animation: card-in 0.6s ease backwards;

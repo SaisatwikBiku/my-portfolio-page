@@ -33,7 +33,7 @@ export default function Projects() {
       id="projects"
       title="Projects"
       eyebrow="Things I've Built"
-      num="03"
+      num="04"
       lead="Proof over promises — things that actually work."
       className="projects"
     >

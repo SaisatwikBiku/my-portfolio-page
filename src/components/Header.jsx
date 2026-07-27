@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
 import { profile, navLinks, site } from '../data/portfolio.js'
-import { useScrollSpy } from '../hooks/useScrollSpy.js'
 import ThemeToggle from './ThemeToggle.jsx'
 import SpideyToggle from './SpideyToggle.jsx'
-
-const sectionIds = navLinks.map((link) => link.href.slice(1))
 
 export default function Header() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const active = useScrollSpy(sectionIds)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30)
+    // Trips just before the in-page sub-nav sticks (it pins at the compact
+    // header height), so the two meet flush with no gap in between.
+    const onScroll = () => setScrolled(window.scrollY > 10)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -30,20 +29,21 @@ export default function Header() {
 
   return (
     <header className={`header ${scrolled ? 'header--scrolled' : ''}`}>
-      <a href="#home" className="logo" onClick={close}>
+      <Link to="/" className="logo" onClick={close}>
         {site.domain}
-      </a>
+      </Link>
 
       <nav className={`navbar ${open ? 'navbar--open' : ''}`}>
         {navLinks.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
+          <NavLink
+            key={link.to}
+            to={link.to}
+            end={link.to === '/'}
             onClick={close}
-            className={active === link.href.slice(1) ? 'active' : ''}
+            className={({ isActive }) => (isActive ? 'active' : '')}
           >
             {link.label}
-          </a>
+          </NavLink>
         ))}
         <a className="navbar-cta" href={profile.resume} target="_blank" rel="noreferrer" onClick={close}>
           Resume
