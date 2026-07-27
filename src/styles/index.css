@@ -174,6 +174,13 @@ a {
 .header {
   position: fixed;
   inset: 0 0 auto 0;
+  /* Safety clamp: a fixed, full-bleed element deriving its width from
+     left:0/right:0 has been observed rendering wider than the true viewport
+     on some mobile browsers/emulators, clipping the hamburger button off the
+     right edge and enabling a horizontal scroll. vw resolves against the
+     visual viewport even when that happens, so this can't make things worse
+     on a browser where the plain inset-derived width is already correct. */
+  max-width: 100vw;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -244,10 +251,13 @@ a {
 .hamburger {
   display: none;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 5px;
-  width: 26px;
-  height: 26px;
+  /* The box is the tap target (44px, the usual touch minimum); the bars below
+     are fixed-width so growing the box doesn't also grow the icon. */
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   cursor: pointer;
@@ -255,7 +265,7 @@ a {
 }
 .hamburger span {
   height: 3px;
-  width: 100%;
+  width: 22px;
   background: var(--ink);
   border-radius: 2px;
   transition: 0.3s ease;
@@ -671,9 +681,23 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: 48px;
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 120px clamp(20px, 6vw, 40px) 80px;
+  /* Full-bleed section, content still centred on the --max column.
+     The 3D backdrop (.hero-3d, inset: 0) and the ::before/::after glows are
+     children of this section, so capping it at --max used to strand them in a
+     1140px box — leaving flat, unanimated gutters either side on wider
+     screens. Spanning the viewport and insetting the *content* with padding
+     instead lets the backdrop reach the edges. The max() keeps the normal
+     edge padding on screens narrower than --max, where the second term
+     goes negative. */
+  padding: 120px max(clamp(20px, 6vw, 40px), calc((100% - var(--max)) / 2)) 80px;
+  /* Those glows are deliberately oversized and offset past the edges
+     (right: -10%, left: -12%) to bleed. At 375px the ::before alone pushed the
+     document 37px wider than the viewport — a real horizontal scroll on
+     mobile. <html> has overflow-x: hidden, but iOS Safari doesn't reliably
+     honour it, so clip the bleed at its source. Now that the section is
+     full-bleed this clips at the viewport edge rather than mid-page, so the
+     glows still fill the width. */
+  overflow: hidden;
 }
 .home::before {
   content: '';
@@ -800,6 +824,10 @@ main {
   flex-shrink: 0;
 }
 .profile-photo-ring {
+  /* The 220px floor is sized for tablet+ (30vw stops shrinking it below a
+     733px viewport). On a phone that pins it at 220px regardless of how
+     narrow the screen is — see the ≤560px override, which drops the floor
+     so the ring scales down with the phone instead of dominating it. */
   width: clamp(220px, 30vw, 340px);
   height: clamp(220px, 30vw, 340px);
   border-radius: 50%;
@@ -1227,13 +1255,16 @@ main {
   margin-top: 16px;
 }
 .pub-metrics {
-  display: flex;
-  flex-wrap: wrap;
+  /* auto-fit + 1fr splits whatever row a set of tiles ends up on evenly among
+     just those tiles — unlike flex-wrap (the previous approach), which left
+     a trailing tile alone on its own row and stretched to the full width
+     when the count didn't divide evenly (3 tiles on a narrow phone card). */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
   gap: 10px;
   margin-top: 18px;
 }
 .pub-metric {
-  flex: 1 1 140px;
   background: var(--bg-alt);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -1554,7 +1585,9 @@ main {
   width: 100%;
   padding: 13px 16px;
   font-family: inherit;
-  font-size: 15px;
+  /* iOS Safari zooms the whole page in on focus for any input under 16px —
+     jarring on a phone and it doesn't zoom back out on blur. */
+  font-size: 16px;
   color: var(--ink);
   background: var(--bg);
   border: 1.5px solid var(--border);
@@ -1763,7 +1796,37 @@ main {
     padding: 72px 18px;
   }
   .home {
-    padding: 100px 18px 60px;
+    padding: 88px 18px 52px;
+    gap: 12px;
+  }
+  /* The hero's content column was taller than most phone screens (measured
+     ~970px on a 375×812 viewport), which pushed "View Résumé"/"See My Work"
+     down into the same fixed bottom-left corner the chat FAB always occupies
+     — the two visually collided and fought for the same tap target on load.
+     Shrinking the photo and tightening every gap below brings the whole
+     stack under one screen, so the buttons land above the FAB instead of
+     behind it. */
+  .profile-photo-ring {
+    width: 152px;
+    height: 152px;
+  }
+  .home-greeting {
+    margin-bottom: 6px;
+  }
+  .home-name {
+    margin-bottom: 8px;
+  }
+  .home-role {
+    margin-bottom: 12px;
+  }
+  .home-tagline {
+    margin-bottom: 16px;
+  }
+  .home-meta {
+    margin-bottom: 16px;
+  }
+  .home-actions {
+    margin-bottom: 20px;
   }
   .about-highlights {
     gap: 10px;
@@ -1833,6 +1896,7 @@ main {
   top: 0;
   left: 0;
   width: 100%;
+  max-width: 100vw; /* see .header for why */
   height: 3px;
   z-index: 300;
   pointer-events: none;
@@ -2523,7 +2587,9 @@ main {
   flex: 1;
   padding: 10px 14px;
   font-family: var(--font);
-  font-size: 14px;
+  /* Same iOS zoom-on-focus issue as the contact form — the chat panel is
+     used from a phone at least as often as the form is. */
+  font-size: 16px;
   color: var(--ink);
   background: var(--bg);
   border: 1.5px solid var(--border);
@@ -2731,6 +2797,178 @@ main {
 }
 
 /* ============================================================
+   Mobile design scale
+   ------------------------------------------------------------
+   The rules above this point were written desktop-first and then patched
+   per-component, which left the phone layout with 18 distinct font sizes
+   between 11 and 36px — five of them (14 / 14.5 / 15 / 15.5 / 16) within
+   two pixels of each other, and four competing card-title sizes (19 / 20 /
+   21 / 22). At desktop widths those differences are legible as hierarchy;
+   at 375px they just read as noise, which is what makes the page feel
+   "off" rather than any single element being wrong. Card padding had drifted
+   the same way (eight variants) as had grid gaps (five).
+
+   This block is deliberately last so it wins, and collapses all of that to
+   one six-step type ramp and a four-step spacing ramp. The steps are far
+   enough apart (~1.25×) to read as intentional levels. Everything is scoped
+   to ≤560px, so the desktop design is untouched.
+
+   Ramp:  display 30 · title 25 · card-title 18 · body 15 · small 13.5 · micro 11
+   ============================================================ */
+@media (max-width: 560px) {
+  /* ---- Display & section headings ---- */
+  .home-name {
+    /* Tuned so the full name wraps to two lines rather than just squeezing
+       onto one — measured, the string needs >33px at a 375px viewport to
+       break, and at ~30px it fits with only 10px of total slack, which reads
+       as an accident rather than a decision. */
+    font-size: clamp(31px, 9.1vw, 38px);
+    line-height: 1.1;
+  }
+  .section-title {
+    font-size: clamp(23px, 6.7vw, 28px);
+    line-height: 1.2;
+  }
+  .section-head {
+    margin-bottom: 30px;
+  }
+  .section-eyebrow {
+    margin-bottom: 7px;
+  }
+
+  /* ---- Card titles: one size, and a heading line-height.
+     These inherited body's 1.6 from <body>, which is why they looked mushy. */
+  .project-card h3,
+  .explore-card h3,
+  .pub-title,
+  .page-next-title,
+  .timeline-head h3,
+  .education-head h3,
+  .glimpse-title,
+  .certifications-title,
+  .languages-title,
+  .cert-body h4 {
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  /* ---- Body copy ---- */
+  .home-tagline,
+  .about-content p,
+  .section-lead,
+  .project-desc,
+  .explore-card p,
+  .pub-summary,
+  .pub-points li,
+  .glimpse-lead,
+  .page-next-blurb,
+  .timeline-body li,
+  .education-course,
+  .education-school {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ---- Secondary / meta ---- */
+  .home-greeting,
+  .home-meta,
+  .project-subtitle,
+  .project-link,
+  .explore-card-go,
+  .pub-authors,
+  .pub-affiliation,
+  .timeline-period,
+  .timeline-company,
+  .education-period,
+  .cert-body p,
+  .skill-group-title,
+  .language-chip,
+  .skill-chip,
+  .page-subnav a,
+  .btn {
+    font-size: 13.5px;
+  }
+  .home-role {
+    font-size: 16px;
+  }
+  /* Location + email sit on one line at 375px with about a pixel to spare,
+     so they read as overflowing even though they technically fit. */
+  .home-meta {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ---- Micro: labels, chips, tags, numerals ---- */
+  .section-eyebrow,
+  .glimpse-eyebrow,
+  .project-year,
+  .project-tags span,
+  .pub-keywords span,
+  .pub-metric-label,
+  .pub-badge,
+  .explore-card-num,
+  .page-next-label,
+  .pub-citation,
+  .about-stat-label,
+  .project-filter,
+  .pub-spine-vol,
+  .pub-spine-date {
+    font-size: 11px;
+  }
+  /* The journal spine's masthead reads as a card title, not a display number. */
+  .pub-spine-mark {
+    font-size: 18px;
+  }
+  /* Wrapped to three lines of bold accent-blue, this out-shouted the paper's
+     own title — and the spine directly above it already states the journal,
+     volume, issue and date. Demote it to quiet metadata on a phone. */
+  .pub-venue {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-faint);
+  }
+  .page-next-arrow {
+    font-size: 18px;
+  }
+
+  /* Stat numerals stay emphatic — they're the reason those tiles exist. */
+  .about-stat-value,
+  .pub-metric-value {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  /* ---- Spacing: one card padding, one grid gap ---- */
+  .section {
+    padding: 56px 18px;
+  }
+  .project-card,
+  .explore-card,
+  .pub-body,
+  .timeline-body,
+  .education-card,
+  .skill-group,
+  .page-next a {
+    padding: 20px;
+  }
+  .cert-card {
+    padding: 16px 18px;
+  }
+  .projects-grid,
+  .explore-grid,
+  .education-grid,
+  .cert-grid,
+  .skill-groups,
+  .pub-list {
+    gap: 14px;
+  }
+  .glimpse-inner {
+    padding: 32px 18px;
+  }
+}
+
+/* ============================================================
    Spider-Man layer — web-shooter cursor, Spidey toggle, Easter egg
    ============================================================ */
 
@@ -2777,6 +3015,7 @@ main {
   position: fixed;
   inset: 0;
   width: 100%;
+  max-width: 100vw; /* see .header for why */
   height: 100%;
   pointer-events: none;
   z-index: 4;
@@ -2813,6 +3052,7 @@ main {
 .spidey-egg {
   position: fixed;
   inset: 0;
+  max-width: 100vw; /* see .header for why */
   z-index: 400;
   pointer-events: none;
   overflow: hidden;
@@ -3056,6 +3296,7 @@ main {
 
   position: fixed;
   inset: 0;
+  max-width: 100vw; /* see .header for why */
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -3415,6 +3656,57 @@ main {
   .intro-portrait { width: clamp(180px, 24vw, 260px); }
   .intro-lead { margin-top: 12px; }
   .intro-enter { margin-top: 18px; }
+}
+
+/* On a phone the welcome step's portrait + copy + six overview chips added up
+   to ~863px — taller than an 812px screen — and .intro's overflow:hidden
+   quietly clipped the top and bottom rather than showing a scrollbar, so the
+   "Skip intro" button, part of the portrait, and part of the "Scroll to
+   continue" prompt all vanished. The chip list was the single biggest
+   contributor (~300px at the desktop-tuned size), so it gets shrunk hardest;
+   everything else is tightened enough to bring the whole step under one
+   screen on a typical phone. The mode-picker step (2nd screen) is already
+   short enough not to need this. */
+@media (max-width: 480px) {
+  .intro {
+    padding: 18px;
+  }
+  .intro-content {
+    gap: 10px;
+  }
+  .intro-portrait {
+    width: 104px;
+  }
+  .intro-hi {
+    font-size: 13px;
+  }
+  .intro-name {
+    font-size: clamp(22px, 7vw, 28px);
+    margin: 3px 0 5px;
+  }
+  .intro-role {
+    font-size: 13px;
+  }
+  .intro-lead {
+    margin-top: 8px;
+    font-size: 13.5px;
+  }
+  .intro-chips {
+    margin: 10px 0 2px;
+    gap: 6px;
+  }
+  .intro-chips li {
+    padding: 5px 10px;
+    font-size: 11.5px;
+    gap: 5px;
+  }
+  .intro-enter {
+    margin-top: 12px;
+  }
+  .intro-mouse {
+    width: 22px;
+    height: 34px;
+  }
 }
 
 /* ============================================================
