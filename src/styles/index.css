@@ -681,17 +681,22 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: 48px;
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 120px clamp(20px, 6vw, 40px) 80px;
-  /* The ::before/::after glows are deliberately oversized and offset past the
-     edges (right: -10%, left: -12%) to bleed off-screen. On a desktop-width
-     hero the page is wide enough to absorb that; at 375px the ::before alone
-     pushed the document 37px wider than the viewport, which is a real
-     horizontal scroll on mobile. <html> has overflow-x: hidden, which hides it
-     on most desktop browsers — but iOS Safari does not reliably honour that,
-     so the page could still pan sideways there. Clip the bleed at its source
-     instead of relying on an ancestor to mask it. */
+  /* Full-bleed section, content still centred on the --max column.
+     The 3D backdrop (.hero-3d, inset: 0) and the ::before/::after glows are
+     children of this section, so capping it at --max used to strand them in a
+     1140px box — leaving flat, unanimated gutters either side on wider
+     screens. Spanning the viewport and insetting the *content* with padding
+     instead lets the backdrop reach the edges. The max() keeps the normal
+     edge padding on screens narrower than --max, where the second term
+     goes negative. */
+  padding: 120px max(clamp(20px, 6vw, 40px), calc((100% - var(--max)) / 2)) 80px;
+  /* Those glows are deliberately oversized and offset past the edges
+     (right: -10%, left: -12%) to bleed. At 375px the ::before alone pushed the
+     document 37px wider than the viewport — a real horizontal scroll on
+     mobile. <html> has overflow-x: hidden, but iOS Safari doesn't reliably
+     honour it, so clip the bleed at its source. Now that the section is
+     full-bleed this clips at the viewport edge rather than mid-page, so the
+     glows still fill the width. */
   overflow: hidden;
 }
 .home::before {
