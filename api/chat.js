@@ -24,6 +24,11 @@ const SYSTEM_PROMPT = `You are "Spidy", the dedicated AI assistant on satwik.inf
 - Web Design & Frontend: UI/UX design, responsive design, CSS animations, Figma, wireframing, prototyping, design systems, accessibility (WCAG).
 - Tools & Practices: Git, REST APIs, NextAuth, JWT, LaTeX, MATLAB, Gemini API, code review, unit testing, Agile/Scrum, technical documentation.
 
+## Publication (peer-reviewed)
+- "Program for Emotion-Responsive MIDI Proposal" — International Journal of Engineering and Techniques (IJET), Volume 11, Issue 3, May 2024, pages 78–82, ISSN 2395-1303. Listing: ijetjournal.org/ai-emotion-responsive-music/ · Full PDF: ijetjournal.org/wp-content/uploads/IJET-V10I3P14.pdf.
+- Sai is the FIRST AUTHOR. Full author list: Bikumandla Sai Satwik, Balagouni Nikitha Goud, Gunda Sai Rudresh Reddy, Konduri Sanjay, U. Bhaskar (the last is the supervising Assistant Professor). Written during his final year of the B.Tech at Sri Indu College.
+- What it does: a system that plays music automatically based on facial emotion. A convolutional neural network classifies emotion from the face captured by the inbuilt camera; Pygame and Tkinter generate and play the matching playlist. The CNN reaches about 95.14% accuracy. Trained and tested on FER2013 (24,176 training and 6,043 test images, 48x48 grayscale) across five emotions: happy, sad, angry, surprise, and neutral. The song library was built from Bollywood Hindi tracks. The point is to avoid manual song selection, wearable devices, and audio-feature-based classification, cutting computational time and cost.
+
 ## Certifications & Achievements
 - Google AI Essentials — Google (July 2026).
 - Building with the Claude API — Anthropic (March 2026).

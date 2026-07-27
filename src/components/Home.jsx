@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { profile, socials, heroBadges } from '../data/portfolio.js'
 import { useTyped } from '../hooks/useTyped.js'
 import Magnetic from './Magnetic.jsx'
@@ -100,9 +101,9 @@ export default function Home() {
             </a>
           </Magnetic>
           <Magnetic>
-            <a className="btn btn--ghost" href="#projects">
+            <Link className="btn btn--ghost" to="/work">
               See My Work
-            </a>
+            </Link>
           </Magnetic>
         </div>
 
@@ -127,7 +128,7 @@ export default function Home() {
         ))}
       </div>
 
-      <a className="scroll-cue" href="#about" aria-label="Scroll to the About section">
+      <a className="scroll-cue" href="#explore" aria-label="Scroll to explore the site">
         <span className="scroll-cue-wheel" />
       </a>
     </section>

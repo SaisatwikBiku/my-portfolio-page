@@ -1,0 +1,35 @@
+import { Outlet } from 'react-router-dom'
+import ScrollProgress from './ScrollProgress.jsx'
+import CursorGlow from './CursorGlow.jsx'
+import Header from './Header.jsx'
+import Footer from './Footer.jsx'
+import BackToTop from './BackToTop.jsx'
+import ChatBot from './ChatBot.jsx'
+import SpideyEgg from './SpideyEgg.jsx'
+import IntroTakeover from './IntroTakeover.jsx'
+import ScrollToTop from './ScrollToTop.jsx'
+import JourneyGlimpse from './JourneyGlimpse.jsx'
+
+// Chrome that has to persist across every route: header, floating widgets, and
+// the one-time intro takeover. Routed pages render into <Outlet/>.
+export default function Layout() {
+  return (
+    <>
+      <ScrollToTop />
+      <ScrollProgress />
+      <CursorGlow />
+      <Header />
+      <main>
+        <Outlet />
+      </main>
+      {/* Site-wide, so the map is always one click away. Hides itself on
+          /journey — see JourneyGlimpse. */}
+      <JourneyGlimpse />
+      <Footer />
+      <BackToTop />
+      <ChatBot />
+      <SpideyEgg />
+      <IntroTakeover />
+    </>
+  )
+}

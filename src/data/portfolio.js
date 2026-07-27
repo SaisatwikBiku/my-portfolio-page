@@ -49,11 +49,12 @@ export const heroBadges = [
 export const about = {
   paragraphs: [
     "I'm a software engineer and Master's student in Computer Science at the University at Albany (SUNY), based in Albany, NY. I build production-grade systems end to end — comfortable across the frontend, backend, and machine-learning layers of a product.",
-    "I've shipped a version-controlled resume platform with a dual-render LaTeX pipeline, a real-time tennis ball detection and tracking system, and a cloud-secured relational database on Google Cloud SQL. I'm driven by project-based learning and turning fuzzy, real-world problems into software people can actually use.",
+    "I've shipped a version-controlled resume platform with a dual-render LaTeX pipeline, a real-time tennis ball detection and tracking system, and a cloud-secured relational database on Google Cloud SQL. The computer-vision thread goes back further — my final-year undergrad research on emotion-responsive music was peer-reviewed and published in IJET in 2024, with me as first author. I'm driven by project-based learning and turning fuzzy, real-world problems into software people can actually use.",
   ],
   highlights: [
     { value: '6+', label: 'Shipped Projects' },
     { value: '3', label: 'Layers: FE · BE · ML' },
+    { value: '1', label: 'Peer-Reviewed Paper' },
     { value: '2026', label: 'MS CS Graduation' },
   ],
 }
@@ -202,6 +203,59 @@ export const projects = [
   },
 ]
 
+// Peer-reviewed publication. Every metadata field here — title, author order,
+// volume, issue, pages, ISSN — and every figure in `metrics` is taken from the
+// published PDF itself, so the citation on the site matches the record of
+// publication. The summary is written for a portfolio reader rather than copied
+// from the paper.
+export const research = [
+  {
+    title: 'Program for Emotion-Responsive MIDI Proposal',
+    role: 'First author',
+    venue: 'International Journal of Engineering and Techniques (IJET)',
+    venueShort: 'IJET',
+    volume: 'Volume 11 · Issue 3',
+    date: 'May 2024',
+    pages: 'pp. 78–82',
+    issn: '2395-1303',
+    authors: [
+      'Bikumandla Sai Satwik',
+      'Balagouni Nikitha Goud',
+      'Gunda Sai Rudresh Reddy',
+      'Konduri Sanjay',
+      'U. Bhaskar',
+    ],
+    // Rendered in accent so a scanning recruiter finds the name instantly.
+    me: 'Bikumandla Sai Satwik',
+    affiliation: 'Sri Indu College of Engineering & Technology (A), CSIT — Hyderabad, India',
+    summary:
+      'Written in the final year of my B.Tech: a system that reads the emotion off a face through the built-in camera and cues a playlist to match it. A convolutional neural network handles the classification; Pygame and Tkinter handle playlist generation and playback. The argument of the paper is that inferring mood from the face removes what every earlier approach charged the listener — manual song selection, a wearable sensor, or an audio-feature classifier that never actually looked at the person.',
+    metrics: [
+      { value: '95.14%', label: 'Detection accuracy' },
+      { value: '30,219', label: 'FER2013 images' },
+      { value: '5', label: 'Emotion classes' },
+    ],
+    points: [
+      'CNN emotion classifier reaching roughly 95.14% accuracy on facial expression detection.',
+      'Trained and tested on FER2013 — 24,176 training and 6,043 test images, 48×48 grayscale — labelled across five emotions: happy, sad, angry, surprise, and neutral.',
+      'Live capture from the inbuilt camera, so the input to the system is a face rather than a form.',
+      'Playlist generation and playback in Pygame & Tkinter, over a song library assembled from Bollywood Hindi tracks.',
+      'Argued and measured against the alternatives it replaces — manual sorting, wearable devices, and audio-feature classification — on computational time and cost.',
+    ],
+    keywords: [
+      'Emotion Detection',
+      'Face Recognition',
+      'Deep Learning',
+      'Music Automation',
+      'AI Music Recommendation',
+    ],
+    href: 'https://ijetjournal.org/ai-emotion-responsive-music/',
+    pdf: 'https://ijetjournal.org/wp-content/uploads/IJET-V10I3P14.pdf',
+    citation:
+      'Bikumandla Sai Satwik, Balagouni Nikitha Goud, Gunda Sai Rudresh Reddy, Konduri Sanjay, U. Bhaskar, "Program for Emotion-Responsive MIDI Proposal," International Journal of Engineering and Techniques, Volume 11, Issue 3, May 2024, pp. 78–82. ISSN 2395-1303.',
+  },
+]
+
 export const experience = [
   {
     role: 'Website Design Intern',
@@ -253,13 +307,11 @@ export const languages = [
 ]
 
 export const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Journey', href: '#journey' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', to: '/' },
+  { label: 'About', to: '/about' },
+  { label: 'Work', to: '/work' },
+  { label: 'Journey', to: '/journey' },
+  { label: 'Contact', to: '/contact' },
 ]
 
 // EmailJS configuration (carried over from the original site).

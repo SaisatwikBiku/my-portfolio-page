@@ -44,6 +44,7 @@ export const PLACES = [
     place: 'Hyderabad, Telangana, India',
     notes: [
       'Four years of fundamentals — machine learning, AI, compiler construction, computer networks, software engineering, and software testing methodologies.',
+      'The final year turned into a first-authored paper: "Program for Emotion-Responsive MIDI Proposal," IJET Volume 11, Issue 3, May 2024, pp. 78–82 — a CNN that reads emotion off a face at ~95.14% accuracy and cues the matching playlist.',
       'Everything on the rest of this map happened *alongside* this degree: three internships and two working stints, all squeezed between semesters.',
     ],
   },
@@ -183,7 +184,7 @@ export const PLACES = [
     place: 'Albany, New York, USA',
     notes: [
       'Master’s in hand, full-stack across frontend, backend, and the ML layer, and a habit of ramping fast on whatever the problem needs.',
-      'Six cities, four organizations, one very long flight. The next marker on this map has not been placed yet.',
+      'Four cities, five organizations, one very long flight. The next marker on this map has not been placed yet.',
     ],
     cta: true,
   },
