@@ -244,10 +244,13 @@ a {
 .hamburger {
   display: none;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 5px;
-  width: 26px;
-  height: 26px;
+  /* The box is the tap target (44px, the usual touch minimum); the bars below
+     are fixed-width so growing the box doesn't also grow the icon. */
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   cursor: pointer;
@@ -255,7 +258,7 @@ a {
 }
 .hamburger span {
   height: 3px;
-  width: 100%;
+  width: 22px;
   background: var(--ink);
   border-radius: 2px;
   transition: 0.3s ease;
@@ -800,6 +803,10 @@ main {
   flex-shrink: 0;
 }
 .profile-photo-ring {
+  /* The 220px floor is sized for tablet+ (30vw stops shrinking it below a
+     733px viewport). On a phone that pins it at 220px regardless of how
+     narrow the screen is — see the ≤560px override, which drops the floor
+     so the ring scales down with the phone instead of dominating it. */
   width: clamp(220px, 30vw, 340px);
   height: clamp(220px, 30vw, 340px);
   border-radius: 50%;
@@ -1227,13 +1234,16 @@ main {
   margin-top: 16px;
 }
 .pub-metrics {
-  display: flex;
-  flex-wrap: wrap;
+  /* auto-fit + 1fr splits whatever row a set of tiles ends up on evenly among
+     just those tiles — unlike flex-wrap (the previous approach), which left
+     a trailing tile alone on its own row and stretched to the full width
+     when the count didn't divide evenly (3 tiles on a narrow phone card). */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
   gap: 10px;
   margin-top: 18px;
 }
 .pub-metric {
-  flex: 1 1 140px;
   background: var(--bg-alt);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -1554,7 +1564,9 @@ main {
   width: 100%;
   padding: 13px 16px;
   font-family: inherit;
-  font-size: 15px;
+  /* iOS Safari zooms the whole page in on focus for any input under 16px —
+     jarring on a phone and it doesn't zoom back out on blur. */
+  font-size: 16px;
   color: var(--ink);
   background: var(--bg);
   border: 1.5px solid var(--border);
@@ -1763,7 +1775,37 @@ main {
     padding: 72px 18px;
   }
   .home {
-    padding: 100px 18px 60px;
+    padding: 88px 18px 52px;
+    gap: 12px;
+  }
+  /* The hero's content column was taller than most phone screens (measured
+     ~970px on a 375×812 viewport), which pushed "View Résumé"/"See My Work"
+     down into the same fixed bottom-left corner the chat FAB always occupies
+     — the two visually collided and fought for the same tap target on load.
+     Shrinking the photo and tightening every gap below brings the whole
+     stack under one screen, so the buttons land above the FAB instead of
+     behind it. */
+  .profile-photo-ring {
+    width: 152px;
+    height: 152px;
+  }
+  .home-greeting {
+    margin-bottom: 6px;
+  }
+  .home-name {
+    margin-bottom: 8px;
+  }
+  .home-role {
+    margin-bottom: 12px;
+  }
+  .home-tagline {
+    margin-bottom: 16px;
+  }
+  .home-meta {
+    margin-bottom: 16px;
+  }
+  .home-actions {
+    margin-bottom: 20px;
   }
   .about-highlights {
     gap: 10px;
@@ -2523,7 +2565,9 @@ main {
   flex: 1;
   padding: 10px 14px;
   font-family: var(--font);
-  font-size: 14px;
+  /* Same iOS zoom-on-focus issue as the contact form — the chat panel is
+     used from a phone at least as often as the form is. */
+  font-size: 16px;
   color: var(--ink);
   background: var(--bg);
   border: 1.5px solid var(--border);
