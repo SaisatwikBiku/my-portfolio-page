@@ -184,7 +184,7 @@ export const PLACES = [
     place: 'Albany, New York, USA',
     notes: [
       'Master’s in hand, full-stack across frontend, backend, and the ML layer, and a habit of ramping fast on whatever the problem needs.',
-      'Four cities, four organizations, one very long flight. The next marker on this map has not been placed yet.',
+      'Four cities, five organizations, one very long flight. The next marker on this map has not been placed yet.',
     ],
     cta: true,
   },
