@@ -174,6 +174,13 @@ a {
 .header {
   position: fixed;
   inset: 0 0 auto 0;
+  /* Safety clamp: a fixed, full-bleed element deriving its width from
+     left:0/right:0 has been observed rendering wider than the true viewport
+     on some mobile browsers/emulators, clipping the hamburger button off the
+     right edge and enabling a horizontal scroll. vw resolves against the
+     visual viewport even when that happens, so this can't make things worse
+     on a browser where the plain inset-derived width is already correct. */
+  max-width: 100vw;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1875,6 +1882,7 @@ main {
   top: 0;
   left: 0;
   width: 100%;
+  max-width: 100vw; /* see .header for why */
   height: 3px;
   z-index: 300;
   pointer-events: none;
@@ -2821,6 +2829,7 @@ main {
   position: fixed;
   inset: 0;
   width: 100%;
+  max-width: 100vw; /* see .header for why */
   height: 100%;
   pointer-events: none;
   z-index: 4;
@@ -2857,6 +2866,7 @@ main {
 .spidey-egg {
   position: fixed;
   inset: 0;
+  max-width: 100vw; /* see .header for why */
   z-index: 400;
   pointer-events: none;
   overflow: hidden;
@@ -3100,6 +3110,7 @@ main {
 
   position: fixed;
   inset: 0;
+  max-width: 100vw; /* see .header for why */
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -3459,6 +3470,57 @@ main {
   .intro-portrait { width: clamp(180px, 24vw, 260px); }
   .intro-lead { margin-top: 12px; }
   .intro-enter { margin-top: 18px; }
+}
+
+/* On a phone the welcome step's portrait + copy + six overview chips added up
+   to ~863px — taller than an 812px screen — and .intro's overflow:hidden
+   quietly clipped the top and bottom rather than showing a scrollbar, so the
+   "Skip intro" button, part of the portrait, and part of the "Scroll to
+   continue" prompt all vanished. The chip list was the single biggest
+   contributor (~300px at the desktop-tuned size), so it gets shrunk hardest;
+   everything else is tightened enough to bring the whole step under one
+   screen on a typical phone. The mode-picker step (2nd screen) is already
+   short enough not to need this. */
+@media (max-width: 480px) {
+  .intro {
+    padding: 18px;
+  }
+  .intro-content {
+    gap: 10px;
+  }
+  .intro-portrait {
+    width: 104px;
+  }
+  .intro-hi {
+    font-size: 13px;
+  }
+  .intro-name {
+    font-size: clamp(22px, 7vw, 28px);
+    margin: 3px 0 5px;
+  }
+  .intro-role {
+    font-size: 13px;
+  }
+  .intro-lead {
+    margin-top: 8px;
+    font-size: 13.5px;
+  }
+  .intro-chips {
+    margin: 10px 0 2px;
+    gap: 6px;
+  }
+  .intro-chips li {
+    padding: 5px 10px;
+    font-size: 11.5px;
+    gap: 5px;
+  }
+  .intro-enter {
+    margin-top: 12px;
+  }
+  .intro-mouse {
+    width: 22px;
+    height: 34px;
+  }
 }
 
 /* ============================================================
