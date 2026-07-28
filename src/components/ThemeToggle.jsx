@@ -30,6 +30,7 @@ export default function ThemeToggle() {
   return (
     <button
       className="theme-toggle"
+      data-tour="theme"
       aria-label={`Switch to ${next} mode`}
       title={`Switch to ${next} mode`}
       onClick={() => setTheme(next)}

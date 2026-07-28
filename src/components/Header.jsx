@@ -33,7 +33,7 @@ export default function Header() {
         {site.domain}
       </Link>
 
-      <nav className={`navbar ${open ? 'navbar--open' : ''}`}>
+      <nav className={`navbar ${open ? 'navbar--open' : ''}`} data-tour="nav">
         {navLinks.map((link) => (
           <NavLink
             key={link.to}
@@ -45,7 +45,7 @@ export default function Header() {
             {link.label}
           </NavLink>
         ))}
-        <a className="navbar-cta" href={profile.resume} target="_blank" rel="noreferrer" onClick={close}>
+        <a className="navbar-cta" data-tour="resume" href={profile.resume} target="_blank" rel="noreferrer" onClick={close}>
           Resume
         </a>
       </nav>
@@ -55,6 +55,7 @@ export default function Header() {
         <ThemeToggle />
         <button
           className={`hamburger ${open ? 'active' : ''}`}
+          data-tour="menu"
           aria-label="Toggle navigation"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
