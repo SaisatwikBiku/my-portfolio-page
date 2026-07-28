@@ -7,6 +7,7 @@ import BackToTop from './BackToTop.jsx'
 import ChatBot from './ChatBot.jsx'
 import SpideyEgg from './SpideyEgg.jsx'
 import IntroTakeover from './IntroTakeover.jsx'
+import NavIntro from './NavIntro.jsx'
 import ScrollToTop from './ScrollToTop.jsx'
 import JourneyGlimpse from './JourneyGlimpse.jsx'
 
@@ -30,6 +31,8 @@ export default function Layout() {
       <ChatBot />
       <SpideyEgg />
       <IntroTakeover />
+      {/* Runs once, right after the takeover leaves. */}
+      <NavIntro />
     </>
   )
 }

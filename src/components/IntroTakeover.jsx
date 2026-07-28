@@ -70,6 +70,9 @@ export default function IntroTakeover() {
       document.documentElement.style.overflow = ''
       document.body.style.overflow = ''
       setActive(false)
+      // Hands off to the header coach marks (NavIntro), which stay out of the
+      // way until the takeover is gone.
+      window.dispatchEvent(new Event('intro:done'))
       // Land on the hero (top). The scroll gesture that dismissed the intro can
       // still have momentum when the page unlocks — block scrolling briefly so
       // it doesn't carry the page down into the About section.

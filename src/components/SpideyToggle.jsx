@@ -48,6 +48,7 @@ export default function SpideyToggle() {
     <>
       <button
         className={`theme-toggle spidey-toggle ${on ? 'is-on' : ''}`}
+        data-tour="spidey"
         aria-label={label}
         aria-pressed={on}
         title={label}
