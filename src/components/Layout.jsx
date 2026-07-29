@@ -6,7 +6,6 @@ import Footer from './Footer.jsx'
 import BackToTop from './BackToTop.jsx'
 import ChatBot from './ChatBot.jsx'
 import SpideyEgg from './SpideyEgg.jsx'
-import IntroTakeover from './IntroTakeover.jsx'
 import NavIntro from './NavIntro.jsx'
 import ScrollToTop from './ScrollToTop.jsx'
 import JourneyGlimpse from './JourneyGlimpse.jsx'
@@ -30,8 +29,9 @@ export default function Layout() {
       <BackToTop />
       <ChatBot />
       <SpideyEgg />
-      <IntroTakeover />
-      {/* Runs once, right after the takeover leaves. */}
+      {/* Runs once on a first visit. Visitors used to meet a full-screen intro
+          takeover before this; with that gone these coach marks are the only
+          thing that greets them. */}
       <NavIntro />
     </>
   )

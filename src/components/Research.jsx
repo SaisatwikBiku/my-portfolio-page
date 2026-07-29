@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Section from './Section.jsx'
 import { research } from '../data/portfolio.js'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 // "Copy citation" — the one thing a reader who cares about a paper actually
 // wants to do with it. Falls back to a hidden textarea + execCommand where the
@@ -115,12 +116,12 @@ function Publication({ paper }) {
 }
 
 export default function Research() {
+  usePageTitle('Research')
+
   return (
     <Section
       id="research"
       title="Research"
-      eyebrow="Published Work"
-      num="05"
       lead="Before any of those projects shipped, one idea went through peer review."
       className="research"
     >

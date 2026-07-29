@@ -1,25 +1,21 @@
-import About from '../components/About.jsx'
-import Skills from '../components/Skills.jsx'
-import Education from '../components/Education.jsx'
+import { Outlet } from 'react-router-dom'
 import PageSubNav from '../components/PageSubNav.jsx'
 import PageNext from '../components/PageNext.jsx'
-import { usePageTitle } from '../hooks/usePageTitle.js'
 
-const SECTIONS = [
-  { id: 'about', label: 'About' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'education', label: 'Education' },
+// Tabs are routes: /about, /about/skills, /about/education. This shell holds
+// the tab strip and the hand-off; the active tab's own section renders into the
+// <Outlet/> between them.
+const TABS = [
+  { to: '/about', label: 'About' },
+  { to: '/about/skills', label: 'Skills' },
+  { to: '/about/education', label: 'Education' },
 ]
 
 export default function AboutPage() {
-  usePageTitle('About')
-
   return (
     <>
-      <PageSubNav items={SECTIONS} />
-      <About />
-      <Skills />
-      <Education />
+      <PageSubNav items={TABS} />
+      <Outlet />
       <PageNext
         to="/work"
         title="Work"

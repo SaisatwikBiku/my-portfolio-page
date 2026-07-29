@@ -1,25 +1,28 @@
-import { useScrollSpy } from '../hooks/useScrollSpy.js'
+import { NavLink } from 'react-router-dom'
 
-// Sticky in-page wayfinding for pages that stack more than one <Section>.
-// `items` is [{ id, label }] in page order; reuses useScrollSpy exactly as the
-// old single-page header nav did, just scoped to this page's own section ids.
+// Tab strip for the two sections of the site that split into several pages.
+// `items` is [{ to, label }] in page order.
+//
+// These used to be #anchors into one long page, with useScrollSpy lighting up
+// whichever section you had scrolled past. They're real routes now — a tab is a
+// destination, not a jump — so the active state comes from the router and the
+// scrollspy is gone.
 export default function PageSubNav({ items }) {
-  const ids = items.map((item) => item.id)
-  // Matches scroll-padding-top: a section counts as "current" once its top
-  // reaches the underside of the header + this sticky bar.
-  const active = useScrollSpy(ids, 150)
-
   return (
-    <nav className="page-subnav" aria-label="Sections on this page">
-      <div className="page-subnav-inner">
+    <nav className="page-subnav" aria-label="Sections">
+      <div className="page-subnav-inner" role="tablist">
         {items.map((item) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            className={active === item.id ? 'active' : ''}
+          <NavLink
+            key={item.to}
+            to={item.to}
+            // Without `end`, the index tab ("/about") would stay active on every
+            // child route, because its path prefixes all of them.
+            end
+            className={({ isActive }) => (isActive ? 'active' : '')}
+            role="tab"
           >
             {item.label}
-          </a>
+          </NavLink>
         ))}
       </div>
     </nav>

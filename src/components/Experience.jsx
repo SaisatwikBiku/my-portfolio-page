@@ -1,13 +1,14 @@
 import Section from './Section.jsx'
 import { experience } from '../data/portfolio.js'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 export default function Experience() {
+  usePageTitle('Experience')
+
   return (
     <Section
       id="experience"
       title="Experience"
-      eyebrow="Where I've Worked"
-      num="06"
       lead="Where the professional habits were formed — reviews, deadlines, documentation."
       className="experience"
     >

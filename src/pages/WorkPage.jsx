@@ -1,25 +1,20 @@
-import Projects from '../components/Projects.jsx'
-import Research from '../components/Research.jsx'
-import Experience from '../components/Experience.jsx'
+import { Outlet } from 'react-router-dom'
 import PageSubNav from '../components/PageSubNav.jsx'
 import PageNext from '../components/PageNext.jsx'
-import { usePageTitle } from '../hooks/usePageTitle.js'
 
-const SECTIONS = [
-  { id: 'projects', label: 'Projects' },
-  { id: 'research', label: 'Research' },
-  { id: 'experience', label: 'Experience' },
+// Tabs are routes: /work, /work/research, /work/experience. See AboutPage —
+// same shell, same contract.
+const TABS = [
+  { to: '/work', label: 'Projects' },
+  { to: '/work/research', label: 'Research' },
+  { to: '/work/experience', label: 'Experience' },
 ]
 
 export default function WorkPage() {
-  usePageTitle('Work')
-
   return (
     <>
-      <PageSubNav items={SECTIONS} />
-      <Projects />
-      <Research />
-      <Experience />
+      <PageSubNav items={TABS} />
+      <Outlet />
       <PageNext
         to="/journey"
         title="Journey"

@@ -22,7 +22,6 @@ export default function JourneyGlimpse() {
     <aside className="glimpse" aria-labelledby="glimpse-title">
       <div className="glimpse-inner">
         <div className="glimpse-copy">
-          <span className="glimpse-eyebrow">Playable</span>
           <h2 className="glimpse-title" id="glimpse-title">
             My résumé, but you walk it
           </h2>
