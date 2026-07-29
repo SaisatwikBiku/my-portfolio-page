@@ -49,7 +49,7 @@ const STEPS = [
     targets: [
       {
         sel: '[data-tour="theme"]',
-        body: 'Whatever you picked in the intro sticks, and this flips it any time you change your mind.',
+        body: 'Flips the whole site between light and dark. Your choice is remembered next time you visit.',
       },
     ],
   },

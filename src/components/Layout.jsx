@@ -10,8 +10,8 @@ import NavIntro from './NavIntro.jsx'
 import ScrollToTop from './ScrollToTop.jsx'
 import JourneyGlimpse from './JourneyGlimpse.jsx'
 
-// Chrome that has to persist across every route: header, floating widgets, and
-// the one-time intro takeover. Routed pages render into <Outlet/>.
+// Chrome that has to persist across every route: header, footer and the
+// floating widgets. Routed pages render into <Outlet/>.
 export default function Layout() {
   return (
     <>
