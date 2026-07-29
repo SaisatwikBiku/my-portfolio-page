@@ -37,7 +37,6 @@ export default function Contact() {
     <Section
       id="contact"
       title="Get In Touch"
-      eyebrow="Contact"
       lead="Every good story leaves room for a next chapter — say hi."
       className="contact"
     >

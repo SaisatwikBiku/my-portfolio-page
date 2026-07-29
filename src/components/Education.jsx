@@ -1,13 +1,14 @@
 import Section from './Section.jsx'
 import { education, languages, certifications } from '../data/portfolio.js'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 export default function Education() {
+  usePageTitle('Education')
+
   return (
     <Section
       id="education"
       title="Education"
-      eyebrow="Background"
-      num="03"
       lead="The foundation everything above stands on."
       className="education"
     >
@@ -29,7 +30,7 @@ export default function Education() {
       </div>
 
       <div className="certifications">
-        <h3 className="certifications-title">Certifications &amp; Achievements</h3>
+        <h3 className="subhead">Certifications &amp; Achievements</h3>
         <div className="cert-grid">
           {certifications.map((cert, i) => (
             <article className="cert-card" key={cert.name} style={{ '--d': `${i * 120}ms` }}>
@@ -51,7 +52,7 @@ export default function Education() {
       </div>
 
       <div className="languages">
-        <h3 className="languages-title">Languages</h3>
+        <h3 className="subhead">Languages</h3>
         <div className="language-chips">
           {languages.map((lang, i) => (
             <span className="language-chip" key={lang.name} style={{ '--d': `${i * 80}ms` }}>

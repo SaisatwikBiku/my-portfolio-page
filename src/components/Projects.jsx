@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Section from './Section.jsx'
 import { projects } from '../data/portfolio.js'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 const filters = ['All', ...new Set(projects.map((p) => p.category))]
 
@@ -25,6 +26,8 @@ function untilt(e) {
 }
 
 export default function Projects() {
+  usePageTitle('Work')
+
   const [active, setActive] = useState('All')
   const shown = active === 'All' ? projects : projects.filter((p) => p.category === active)
 
@@ -32,8 +35,6 @@ export default function Projects() {
     <Section
       id="projects"
       title="Projects"
-      eyebrow="Things I've Built"
-      num="04"
       lead="Proof over promises — things that actually work."
       className="projects"
     >

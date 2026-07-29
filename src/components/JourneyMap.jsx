@@ -652,8 +652,6 @@ export default function JourneyMap() {
     <Section
       id="journey"
       title="The Journey"
-      eyebrow="Playable"
-      num="07"
       lead="Four cities, multiple experiences, one very long flight — walk it yourself."
       className="journey"
     >

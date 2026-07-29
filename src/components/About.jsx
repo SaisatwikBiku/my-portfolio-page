@@ -2,6 +2,7 @@ import Section from './Section.jsx'
 import { about } from '../data/portfolio.js'
 import { useReveal } from '../hooks/useReveal.js'
 import { useCountUp } from '../hooks/useCountUp.js'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 // One stat card whose numeric part counts up from zero when scrolled into view.
 function Stat({ value, label, start }) {
@@ -18,20 +19,20 @@ function Stat({ value, label, start }) {
 }
 
 export default function About() {
+  usePageTitle('About')
+
   const [statsRef, statsVisible] = useReveal()
 
   return (
     <Section
       id="about"
       title="About Me"
-      eyebrow="Who I Am"
-      num="01"
       lead="Every portfolio starts with a person — here's the short version of mine."
       className="about"
     >
       <div className="about-grid">
         <div className="about-image">
-          <img src="/about-image.png" alt="Sai Satwik Bikumandla" />
+          <img src="/profile-photo.jpeg" alt="Sai Satwik Bikumandla" />
         </div>
         <div className="about-content">
           {about.paragraphs.map((p, i) => (

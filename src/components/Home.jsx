@@ -118,7 +118,10 @@ export default function Home() {
 
       <div className="profile-photo" ref={photoRef}>
         <div className="profile-photo-ring">
-          <img src="/profile-photo.jpeg" alt={profile.name} />
+          {/* The illustrated portrait. It's a 787×900 upright frame, so the
+              circular crop is pulled to the top — centring it would cut the
+              face off at the chin. */}
+          <img src="/avatar-illustration.jpg" alt={`Illustrated portrait of ${profile.name}`} />
         </div>
         {heroBadges.map((badge, i) => (
           <span className={`float-badge float-badge--${i + 1}`} key={badge.name}>

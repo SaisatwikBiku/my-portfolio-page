@@ -6,6 +6,12 @@ import AboutPage from './pages/AboutPage.jsx'
 import WorkPage from './pages/WorkPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
+import About from './components/About.jsx'
+import Skills from './components/Skills.jsx'
+import Education from './components/Education.jsx'
+import Projects from './components/Projects.jsx'
+import Research from './components/Research.jsx'
+import Experience from './components/Experience.jsx'
 
 // The Journey drags in the procedural world generator and its ~1,300-line
 // painter, which nothing else on the site uses. Now that it has a route of its
@@ -21,8 +27,19 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/work" element={<WorkPage />} />
+        {/* About and Work are tab shells: the shell renders the tab strip and
+            the "next chapter" hand-off, and the selected tab's section renders
+            between them. Each tab is a real route with its own URL. */}
+        <Route path="/about" element={<AboutPage />}>
+          <Route index element={<About />} />
+          <Route path="skills" element={<Skills />} />
+          <Route path="education" element={<Education />} />
+        </Route>
+        <Route path="/work" element={<WorkPage />}>
+          <Route index element={<Projects />} />
+          <Route path="research" element={<Research />} />
+          <Route path="experience" element={<Experience />} />
+        </Route>
         <Route
           path="/journey"
           element={

@@ -1,5 +1,6 @@
 import Section from './Section.jsx'
 import { skillGroups } from '../data/portfolio.js'
+import { usePageTitle } from '../hooks/usePageTitle.js'
 
 const allSkills = skillGroups.flatMap((group) => group.skills)
 
@@ -19,12 +20,12 @@ const faceTransforms = [
 ]
 
 export default function Skills() {
+  usePageTitle('Skills')
+
   return (
     <Section
       id="skills"
       title="Skills & Tooling"
-      eyebrow="What I Work With"
-      num="02"
       lead="Collected project by project, sharpened bug by bug."
       className="skills"
     >

@@ -32,7 +32,6 @@ export default function Explore() {
     <Section
       id="explore"
       title="Where to next?"
-      eyebrow="Explore"
       lead="Three doors — take whichever one you came for."
       className="explore"
     >
