@@ -1,19 +1,26 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Mounts the Vercel serverless function at /api/chat during local dev, so the
-// chatbot works under `npm run dev` exactly as it does in production.
+// Mounts the Vercel serverless functions during local dev, so the chatbot and
+// the contact form's email verification work under `npm run dev` exactly as
+// they do in production.
+const API_ROUTES = ['chat', 'otp']
+
 function localApiRoutes(env) {
   return {
     name: 'local-api-routes',
     configureServer(server) {
-      server.middlewares.use('/api/chat', async (req, res) => {
-        if (!process.env.GEMINI_API_KEY && env.GEMINI_API_KEY) {
-          process.env.GEMINI_API_KEY = env.GEMINI_API_KEY
-        }
-        const { default: handler } = await server.ssrLoadModule('/api/chat.js')
-        handler(req, res)
-      })
+      for (const route of API_ROUTES) {
+        server.middlewares.use(`/api/${route}`, async (req, res) => {
+          // .env.local reaches the handlers the same way Vercel's project
+          // environment does — through process.env.
+          for (const [key, value] of Object.entries(env)) {
+            if (process.env[key] === undefined) process.env[key] = value
+          }
+          const { default: handler } = await server.ssrLoadModule(`/api/${route}.js`)
+          handler(req, res)
+        })
+      }
     },
   }
 }

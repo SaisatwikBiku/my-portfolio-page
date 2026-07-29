@@ -185,6 +185,23 @@ a {
   transform: translateY(-2px);
 }
 
+/* A disabled button must not answer the pointer — :hover still matches on
+   disabled elements, so every hover effect needs unwinding here. */
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn:disabled:hover {
+  transform: none;
+}
+.btn--primary:disabled:hover {
+  background: var(--accent);
+}
+.btn--ghost:disabled:hover {
+  background: transparent;
+  color: var(--accent);
+}
+
 /* ============================================================
    Header / Nav
    ============================================================ */
@@ -1648,6 +1665,16 @@ main > .section:first-child {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   resize: vertical;
 }
+/* Locked until the email is verified — readably dimmed rather than greyed to
+   the point the placeholder explaining why can't be read. */
+.contact-form input:disabled,
+.contact-form textarea:disabled {
+  background: var(--bg-alt);
+  border-style: dashed;
+  color: var(--ink-faint);
+  cursor: not-allowed;
+  resize: none;
+}
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: none;
@@ -1672,6 +1699,75 @@ main > .section:first-child {
   color: #d12c2c;
   font-size: 13px;
   margin-top: -8px;
+}
+
+/* Email verification (one-time passcode) */
+.contact-email-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.contact-email-row input {
+  flex: 1;
+  min-width: 0;
+}
+.contact-form .btn--inline {
+  flex: none;
+  margin-top: 0;
+  padding: 12px 18px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.otp-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a8a4a;
+  white-space: nowrap;
+}
+.otp-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: 16px;
+  margin-top: -4px;
+  background: var(--bg-alt);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.otp-hint {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.otp-hint strong {
+  color: var(--ink);
+  word-break: break-all;
+}
+.otp-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.contact-form .otp-input {
+  /* Six 16px digits plus the tracking below, and no more — a full-width box
+     invites a sentence where six characters belong. */
+  width: 140px;
+  flex: none;
+  padding: 11px 12px;
+  text-align: center;
+  /* Digits read as a passcode, not prose: even width, wide tracking. */
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  background: var(--surface);
+}
+.otp-gate-note {
+  margin-top: -8px;
+  font-size: 13px;
+  color: var(--ink-faint);
 }
 .contact-success {
   display: flex;
@@ -1862,6 +1958,17 @@ main > .section:first-child {
   .profile-photo-ring {
     width: 200px;
     height: 200px;
+  }
+  /* The email field plus its Verify button don't both fit a phone width — let
+     the button drop onto its own line rather than crushing the input. */
+  .contact-email-row {
+    flex-wrap: wrap;
+  }
+  .contact-email-row input {
+    flex-basis: 100%;
+  }
+  .contact-form .btn--inline {
+    flex: 1;
   }
 }
 
@@ -2452,6 +2559,11 @@ main > .section:first-child {
 /* The WebGL wireframes are tuned for dark; dim the canvas a bit on light. */
 :root[data-theme='light'] .hero-3d {
   opacity: 0.72;
+}
+
+/* The verified-email green is picked for white; it goes muddy on a dark card. */
+:root[data-theme='dark'] .otp-verified {
+  color: #46d18a;
 }
 
 /* Devicons that are solid black (Next.js, Flask, LaTeX, GitHub) vanish on

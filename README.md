@@ -48,14 +48,35 @@ Pages hand off to the next one in order, so the site still reads as one narrativ
 npm install
 ```
 
-The chatbot needs a Gemini API key. Create a `.env.local` in the project root
-(it's gitignored):
+Create a `.env.local` in the project root (it's gitignored):
 
 ```bash
+# Chatbot
 GEMINI_API_KEY=your-key-here
+
+# Contact-form email verification. OTP_SECRET signs the passcode tokens —
+# any long random string (`openssl rand -hex 32`).
+OTP_SECRET=your-random-secret
+EMAILJS_OTP_TEMPLATE_ID=template_xxxxxxx
+EMAILJS_PRIVATE_KEY=your-emailjs-private-key
+
+# Dev only: print passcodes to the dev-server terminal instead of mailing
+# them, so the flow is testable without a live template. Never set in prod.
+OTP_DEV_ECHO=1
 ```
 
-Everything except the chatbot works without it.
+Everything except the chatbot and email verification works without these. Set
+the same variables in the Vercel project settings for production.
+
+The passcode email goes out through EmailJS's REST API, which needs two things
+set up in the EmailJS dashboard:
+
+1. **Account → Security** — turn on "Allow EmailJS API for non-browser
+   applications", and copy the private key from **Account → API Keys** into
+   `EMAILJS_PRIVATE_KEY`.
+2. A second template (alongside the contact-form one) whose **To** field is
+   `{{to_email}}`, using `{{passcode}}`, `{{to_name}}` and `{{time}}` in the
+   body. Its ID goes in `EMAILJS_OTP_TEMPLATE_ID`.
 
 ```bash
 # Start the dev server (http://localhost:5173)
@@ -68,13 +89,14 @@ npm run build
 npm run preview
 ```
 
-`vite.config.js` mounts the `/api/chat` serverless handler into the dev server, so the
-chatbot behaves the same locally as in production.
+`vite.config.js` mounts the `/api/*` serverless handlers into the dev server, so the
+chatbot and email verification behave the same locally as in production.
 
 ## Project Structure
 
 ```
 api/chat.js             Serverless chatbot endpoint (Gemini; key stays server-side)
+api/otp.js              Serverless contact-form email verification (passcode never hits the client)
 public/                 Static assets (images, walker sprite, résumé PDF)
 src/
   pages/                One component per route
