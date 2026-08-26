@@ -136,11 +136,22 @@ export const skillGroups = [
 ]
 
 export const certifications = [
+  { name: 'Building AI Agents: Advanced Techniques for Developers', issuer: 'Linkedin Learning', date: 'August 2026' },
   { name: 'Google AI Essentials', issuer: 'Google', date: 'July 2026' },
   { name: 'Building with the Claude API', issuer: 'Anthropic', date: 'March 2026' },
 ]
 
 export const projects = [
+  {
+    title: 'MarkVid - Bookmark Videos for Later',
+    subtitle: 'Video Bookmarking Chrome Extension',
+    year: '2026',
+    category: 'Frontend',
+    description:
+      'A Chrome extension that lets users bookmark videos for later viewing, with a clean and intuitive interface. Built with JavaScript, it leverages the Chrome Extension APIs for seamless integration with the browser.',
+    tags: ['JavaScript', 'Chrome Extension'],
+    href: 'https://chromewebstore.google.com/detail/kikihaeleljdfmejdhphjmbefflejpod?utm_source=item-share-cb'
+  },
   {
     title: 'LaTeX Resume Builder',
     subtitle: 'Version-Controlled Resume Platform',
