@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Section from './Section.jsx'
 import { projects } from '../data/portfolio.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
@@ -74,7 +75,11 @@ export default function Projects() {
                 <span key={tag}>{tag}</span>
               ))}
             </div>
-            {project.private ? (
+            {project.page ? (
+              <Link className="project-link" to={project.page}>
+                Read the case study →
+              </Link>
+            ) : project.private ? (
               <span className="project-link project-link--private">🔒 Private · available on request</span>
             ) : (
               <a className="project-link" href={project.href} target="_blank" rel="noreferrer">

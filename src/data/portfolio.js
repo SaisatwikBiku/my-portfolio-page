@@ -143,6 +143,17 @@ export const certifications = [
 
 export const projects = [
   {
+    title: 'Job Agent',
+    subtitle: 'Self-Hosted AI Job Search Assistant',
+    year: '2026',
+    category: 'ML & AI',
+    description:
+      'A job-search assistant running on a spare laptop with local LLMs and no cloud APIs. Every night it reads ~13,000 postings from ~140 company career boards, scores them against my resume, and prepares tailored applications: answers, resume and cover letter. I approve each one from a web panel on my phone; only then does a browser script fill and submit the real form.',
+    tags: ['Python', 'FastAPI', 'Ollama', 'Qwen3', 'JavaScript', 'Linux'],
+    page: '/work/job-agent',
+    href: 'https://github.com/SaisatwikBiku/job-agent',
+  },
+  {
     title: 'MarkVid - Bookmark Videos for Later',
     subtitle: 'Video Bookmarking Chrome Extension',
     year: '2026',
@@ -213,6 +224,74 @@ export const projects = [
     href: 'https://github.com/SaisatwikBiku/prototype-generator-for-web-dev',
   },
 ]
+
+// Case study for the Job Agent project (/work/job-agent). Screenshots are the
+// real panel running on made-up data; nothing from my own search is shown.
+const JA = '/projects/job-agent/'
+export const jobAgent = {
+  title: 'Job Agent',
+  lead: 'A self-hosted AI assistant for the job search, running on a spare laptop with no cloud APIs.',
+  href: 'https://github.com/SaisatwikBiku/job-agent',
+  hero: {
+    src: `${JA}home.jpg`,
+    alt: 'The Job Agent home screen: items that need attention, applications ready to review, a seven-day chart and the nightly search status',
+    caption: 'The home screen. All data in these screenshots is made up.',
+  },
+  metrics: [
+    { value: '~13,000', label: 'postings read per night' },
+    { value: '~140', label: 'company career boards' },
+    { value: '0', label: 'cloud AI APIs' },
+    { value: '1 tap', label: 'to approve each application' },
+  ],
+  sections: [
+    {
+      heading: 'The problem',
+      text: 'Applying well takes time: finding roles that actually fit, answering the same form questions again and again, tailoring a resume and cover letter, and then keeping track of every reply. Mass-apply bots save time by spraying low-quality applications. I wanted the opposite: the machine does the preparation, and I make every decision.',
+    },
+    {
+      heading: 'What it does',
+      points: [
+        'Finds jobs from the public board APIs of Greenhouse, Lever, Ashby, Workday and SmartRecruiters, plus four staffing agencies, and discovers new companies through a local search engine.',
+        'A local 4B model extracts each posting’s required skills and level into a fixed JSON schema; the match score is then computed in code, so it’s consistent and explainable.',
+        'Prepares each strong match overnight: answers from a profile I fill in once, drafted answers to open questions, a tailored resume and a cover letter, with unsupported claims flagged.',
+        'Checks every application against employers’ hiring rules first: duplicates, per-company caps, cooldowns after rejections, graduation windows and AI-use policies.',
+        'I review each one in the panel and approve with one key or a swipe. Only approved applications are filled and submitted, by a userscript in my own browser, and an exact copy of what was sent is kept.',
+        'Reads a dedicated inbox (read-only) to track confirmations, assessments, interviews and rejections, and writes a weekly report with the numbers behind every suggestion.',
+      ],
+    },
+    {
+      heading: 'How it’s built',
+      points: [
+        'Python and FastAPI on Ubuntu Server, on a laptop with an Intel Core i3 and 16 GB of RAM. Qwen3 4B and 8B run on the CPU through Ollama.',
+        'Benchmarks drove the design: CPU-bound generation made prompt size the main cost, so prompts are short and stable for Ollama’s cache. A 1,011-token step went from ~30 s of prompt processing to 1.7 s.',
+        'A keyboard-first web panel in plain HTML, CSS and JavaScript: three panes on a laptop, stacked on a phone, with ETag caching so unchanged lists cost a 304.',
+        'Deploys itself: a systemd timer pulls from GitHub, checks syntax, backs up the running version and rolls back automatically if the health check fails.',
+      ],
+    },
+    {
+      heading: 'Secure by design',
+      points: [
+        'Human in the loop: the model’s output never becomes a command, a URL or a submission without my approval.',
+        'Least privilege: the panel and the tools run as separate Unix users joined by a single sudo rule, and a firewall rule keeps the tool user from approving its own actions.',
+        'Private by default: the panel is only reachable over my Tailscale network, email text goes to a model with no tools, and links in emails are never opened.',
+        'Plays by the rules: it reads public board APIs, checks robots.txt, and leaves out sites whose terms forbid automated access.',
+      ],
+    },
+  ],
+  gallery: [
+    { src: `${JA}jobs-decide.jpg`, alt: 'Reviewing an application with answers, consents, tailored documents and an Approve button', caption: 'Reviewing an application: answers to check, consents to tick, tailored resume and cover letter.' },
+    { src: `${JA}applications.jpg`, alt: 'An application timeline from approval to interview request', caption: 'Every application keeps a timeline and an exact copy of what was sent.' },
+    { src: `${JA}insights.jpg`, alt: 'Weekly report with suggestions and a jobs-per-day chart', caption: 'The weekly report. No model writes it; every suggestion shows its numbers.' },
+    { src: `${JA}inbox.jpg`, alt: 'Inbox with an assessment and a live deadline countdown', caption: 'Replies sorted by a local model, with live deadline countdowns.' },
+  ],
+  phones: [
+    { src: `${JA}phone-home.jpg`, alt: 'Home screen on a phone' },
+    { src: `${JA}phone-review.jpg`, alt: 'Reviewing an application on a phone' },
+  ],
+  phonesNote: 'On a phone the same app stacks: a bottom tab bar, and each job opens full screen with Approve and Skip, or a swipe.',
+  tags: ['Python', 'FastAPI', 'Ollama', 'Qwen3', 'JavaScript', 'Linux', 'systemd', 'Tailscale', 'IMAP'],
+  note: 'Personal details, my job search and server addresses are kept out of the public code; the screenshots use invented data.',
+}
 
 // Peer-reviewed publication. Every metadata field here — title, author order,
 // volume, issue, pages, ISSN — and every figure in `metrics` is taken from the
