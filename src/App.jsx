@@ -13,6 +13,7 @@ import Projects from './components/Projects.jsx'
 import Research from './components/Research.jsx'
 import Experience from './components/Experience.jsx'
 import JobAgent from './components/JobAgent.jsx'
+import JobAgentIncident from './components/JobAgentIncident.jsx'
 
 // The Journey drags in the procedural world generator and its ~1,300-line
 // painter, which nothing else on the site uses. Now that it has a route of its
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="research" element={<Research />} />
           <Route path="experience" element={<Experience />} />
           <Route path="job-agent" element={<JobAgent />} />
+          <Route path="job-agent/incident" element={<JobAgentIncident />} />
         </Route>
         <Route
           path="/journey"

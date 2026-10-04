@@ -66,6 +66,11 @@ export default function JobAgent() {
         <p className="cs-phones-note">{p.phonesNote}</p>
       </div>
 
+      <Link className="cs-callout" to={p.incident.to}>
+        <span className="cs-callout-title">{p.incident.title} →</span>
+        <span className="cs-callout-text">{p.incident.text}</span>
+      </Link>
+
       <div className="project-tags cs-tags">
         {p.tags.map((tag) => (
           <span key={tag}>{tag}</span>
