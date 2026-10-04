@@ -4564,3 +4564,157 @@ main > .section:first-child {
     max-width: none;
   }
 }
+
+/* ---------- incident report (/work/job-agent/incident) ---------- */
+.cs-summary {
+  max-width: 820px;
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.7;
+  margin-bottom: var(--space-lg);
+}
+.cs-timeline {
+  list-style: none;
+  display: grid;
+  gap: 0;
+  border-left: 2px solid var(--border);
+  margin-left: 4px;
+}
+.cs-timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: var(--space-sm);
+  padding: 0 0 var(--space-md) var(--space-md);
+}
+.cs-timeline li::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 0.45em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg);
+}
+.cs-timeline-time {
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.cs-timeline-text {
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.cs-phones--grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+}
+.cs-phones--grid .cs-shot--phone {
+  width: auto;
+}
+.cs-chart {
+  margin: 0 0 var(--space-xl);
+  max-width: 820px;
+  padding: var(--card-pad);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.cs-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.cs-chart figcaption {
+  font-size: 13.5px;
+  color: var(--ink-faint);
+  margin-top: var(--space-xs);
+}
+.cs-chart-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.cs-chart-axis {
+  fill: var(--ink-faint);
+  font-size: 12px;
+}
+.cs-chart-phase {
+  fill: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.cs-chart-phase-label {
+  fill: var(--ink-faint);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.cs-chart-limit {
+  stroke: #e5484d;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 5;
+}
+.cs-chart-limit-label {
+  fill: #e5484d;
+  font-size: 12px;
+  font-weight: 600;
+}
+.cs-chart-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.cs-chart-peak {
+  fill: var(--accent);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+.cs-chart-peak-label {
+  fill: var(--ink);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.cs-callout {
+  display: grid;
+  gap: 4px;
+  max-width: 820px;
+  padding: var(--space-md) var(--card-pad);
+  margin-bottom: var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cs-callout:hover {
+  transform: translateY(var(--card-lift));
+  box-shadow: var(--shadow-md);
+}
+.cs-callout-title {
+  font-weight: 700;
+  color: var(--accent);
+}
+.cs-callout-text {
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+@media (max-width: 760px) {
+  .cs-phones--grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cs-timeline li {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-callout {
+    transition: none;
+  }
+}

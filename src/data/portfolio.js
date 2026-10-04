@@ -291,6 +291,102 @@ export const jobAgent = {
   phonesNote: 'On a phone the same app stacks: a bottom tab bar, and each job opens full screen with Approve and Skip, or a swipe.',
   tags: ['Python', 'FastAPI', 'Ollama', 'Qwen3', 'JavaScript', 'Linux', 'systemd', 'Tailscale', 'IMAP'],
   note: 'Personal details, my job search and server addresses are kept out of the public code; the screenshots use invented data.',
+  incident: {
+    to: '/work/job-agent/incident',
+    title: 'Incident report: the day it ran hot',
+    text: 'An overheating alert on a hike, a shutdown from my phone, and what I changed. October 3, 2026.',
+  },
+}
+
+// Incident report for the job agent, 2026-10-03. Every time, number and log line here is
+// from the server's own records (systemd journal, sar, Ollama timings) or from the
+// controlled test run that evening. The screenshots are the real ones from my phone, with
+// my wallpaper, email, profile photo and network addresses blurred.
+const JAI = '/projects/job-agent/incident/'
+export const jobAgentIncident = {
+  title: 'The day it ran hot',
+  lead: 'Incident report, Saturday October 3, 2026: an overheating alert on a mountain, two shutdowns, and what I changed.',
+  date: 'October 3, 2026',
+  summary:
+    'I was hiking Sleeping Beauty Mountain when my phone said the server was at 95°C. I shut it down over SSH from the trail. Back home, the logs showed it had been idle for hours: one 32-second AI request had pushed the CPU into its normal turbo burst, and the alert fired on that single spike. Then I shut it down a second time by pressing the power button to wake the screen. Nothing was lost, and the agent now caps its bursts, pauses itself when it stays hot, and logs everything it sends.',
+  metrics: [
+    { value: '95°C', label: 'peak that set off the alert' },
+    { value: '32 s', label: 'the burst that caused it' },
+    { value: '18 min', label: 'from alert to remote shutdown' },
+    { value: '25 W', label: 'new burst cap (was 51–55 W)' },
+  ],
+  timeline: [
+    { time: '1:00 am', text: 'The nightly search runs as usual until 3:14. The CPU sits at 63–74% for twenty minutes, then 25%. No problem.' },
+    { time: '3–5 pm', text: 'The server is idle, 99.8% of the CPU free. I’m on the trail.' },
+    { time: '5:05 pm', text: 'A new email arrives and the local 4B model reads it: 32 seconds of prompt processing on all eight threads, right after the model reloaded.' },
+    { time: '5:06 pm', text: 'My phone: “Server running hot. CPU at 95°C. Check that its vents aren’t blocked.”' },
+    { time: '5:10 pm', text: 'I switch Auto mode off, hoping to make the agent stop working.' },
+    { time: '5:11 pm', text: 'I ask the panel’s assistant to “stop all tasks and give the CPU rest.” Answering means more model work. It lists /proc, then asks permission to run sudo shutdown now. Nothing runs without my approval, and I don’t give it.' },
+    { time: '5:24 pm', text: 'I SSH in from my iPhone over Tailscale and run sudo poweroff. Tailscale shows the server offline.' },
+    { time: '7:35 pm', text: 'Home. Power on: 39°C and idle. I start reading the logs.' },
+    { time: '7:50 pm', text: 'A controlled repeat of the same kind of request: 38°C to 88°C in 28 seconds, then back to the 40s within 20 seconds.' },
+    { time: '7:56 pm', text: 'The screen has gone dark, so I press the power button to wake it. On this server that means shut down. Off again.' },
+    { time: '8:35 pm', text: 'Fixes deployed: a 25 W burst cap, a heat guard, a Cool down button, a long-press power button, and logging for every alert.' },
+  ],
+  cause: [
+    'The laptop has an Intel Core i3-1315U, a 15 W chip. Its firmware lets it draw 51–55 W for about 30 seconds at a time (Intel calls this PL2), then holds it to 15 W.',
+    'Reading a long prompt is pure computation, so a single model request can use that entire burst: all eight threads at 3.2 GHz. Writing the reply is limited by memory speed and runs much cooler.',
+    'In my test the temperature rose about 1.5°C every second the burst lasted. The 5:05 pm request ran a few seconds longer, began with a model reload, and started from a warmer afternoon, which is exactly how it reached 95°C.',
+    'That is inside Intel’s spec (the chip throttles at 100°C), and it wasn’t the vents or the sun. The real problem was the alert: it fired on one reading of a normal spike and told me to check the vents, so it read like an emergency.',
+  ],
+  chart: {
+    caption: 'The controlled repeat: one 1,112-token prompt on the 4B model, CPU temperature every half second. The dashed line is the 95°C reading behind the alert.',
+    // seconds since the start, °C (every other sample of the half-second log)
+    points: [[0, 38], [1.1, 37], [2.1, 37], [3.2, 57], [4.3, 67], [5.4, 74], [6.5, 66], [7.6, 69], [8.6, 77], [9.7, 61], [10.8, 74], [11.9, 79], [13, 79], [14, 77], [15.1, 82], [16.2, 81], [17.3, 82], [18.4, 72], [19.5, 80], [20.6, 80], [21.7, 82], [22.7, 84], [23.8, 80], [24.9, 84], [26, 88], [27.1, 84], [28.2, 88], [29.3, 69], [30.4, 66], [31.4, 66], [32.6, 61], [33.7, 63], [34.8, 61], [35.9, 62], [36.9, 51], [38, 50], [39, 48], [40.1, 48], [41.1, 47], [42.2, 46], [43.3, 46], [44.3, 45], [45.4, 46], [46.4, 45], [47.5, 44], [48.6, 43], [49.6, 43], [50.7, 43], [51.7, 42], [52.8, 42], [53.9, 42], [54.9, 42], [56, 42]],
+    phases: [{ from: 3, to: 29, label: 'Reading the prompt' }, { from: 29, to: 36, label: 'Writing' }],
+  },
+  shots: [
+    { src: `${JAI}alerts.jpg`, alt: 'Three notifications from the agent: server running hot at 95°C, approval needed for sudo shutdown now, and task done', caption: 'What reached my phone on the trail, oldest at the bottom: the heat alert, the assistant asking to shut the server down, and the task ending without doing anything. Wallpaper blurred.' },
+    { src: `${JAI}assistant-stop.jpg`, alt: 'The agent panel on a phone, working on the task “Stop all task and give CPU rest”', caption: 'Asking the assistant to stop everything only gave the model more work.' },
+    { src: `${JAI}poweroff.jpg`, alt: 'A terminal on the phone running sudo poweroff on the server, with the broadcast “The system will power off now!”', caption: '5:24 pm: shutting it down over SSH from my phone, through Tailscale. Address blurred.' },
+    { src: `${JAI}tailscale-offline.jpg`, alt: 'The Tailscale app showing the phone online and the server offline', caption: 'Tailscale confirms the server is off. Device addresses blurred.' },
+  ],
+  sections: [
+    {
+      heading: 'What went right',
+      points: [
+        'I could reach the server from a mountain. Tailscale and an SSH app on my phone were enough to shut it down cleanly, 18 minutes after the alert.',
+        'The approval gate held. The assistant asked to run sudo shutdown now, and nothing happened without my yes.',
+        'Nothing was lost. Both shutdowns were orderly, the night’s search had already finished, and the agent picks up where it left off.',
+        'The logs told the whole story: the systemd journal, sar’s CPU history and Ollama’s timings put every step to the second.',
+      ],
+    },
+    {
+      heading: 'What went wrong',
+      points: [
+        'The alert went off on a single reading of a normal burst, and gave no hint that short spikes are expected.',
+        'There was no rest button. The only way to slow the agent down from my phone was to ask its own AI, which added load.',
+        'Switching Auto mode off also stopped the 6 pm to-do list, and nothing in the logs said so. It took real digging to tell a stopped schedule from a broken one.',
+        'Pressing the power button to wake the screen shut the server down. A sensible default for a laptop is the wrong one for a server.',
+      ],
+    },
+    {
+      heading: 'What I changed',
+      points: [
+        'Turbo bursts are capped at 25 W, re-applied every minute in case the firmware restores its own limits. Sustained power stays at 15 W.',
+        'A heat guard replaces the old alert: only if the CPU stays at 90°C for a full minute does the agent pause its AI work, unload the model, and send one calm alert. It carries on by itself below 70°C.',
+        'A Cool down button on the home screen pauses the agent for an hour, and the status bar says when it’s cooling.',
+        'A short press of the power button now does nothing; holding it shuts down cleanly.',
+        'Every push notification and scheduled send is logged with how many devices received it, and the panel shows when the scheduler last ran.',
+        'While digging, I found Auto mode refitting its model on every page refresh. That’s fixed too.',
+      ],
+    },
+    {
+      heading: 'What I learned',
+      points: [
+        'An alert should say what’s normal and what to do. “95°C” with no context sent me to an SSH prompt on a mountain.',
+        'Give yourself a way to stop the system that doesn’t depend on the system. Asking an overworked AI to calm down makes it work harder.',
+        'Measure before you blame. I suspected sunlight and dust; the data said turbo bursts.',
+        'A headless server needs server defaults, like a power button that doesn’t mean “off”.',
+        'Log the boring things. The question that took longest wasn’t the heat, it was “did that alert ever go out?”',
+      ],
+    },
+  ],
 }
 
 // Peer-reviewed publication. Every metadata field here — title, author order,
