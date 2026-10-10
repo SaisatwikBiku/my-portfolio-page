@@ -253,10 +253,12 @@ export const jobAgent = {
       points: [
         'Finds jobs from the public board APIs of Greenhouse, Lever, Ashby, Workday and SmartRecruiters, plus four staffing agencies, and discovers new companies through a local search engine.',
         'A local 4B model extracts each posting’s required skills and level into a fixed JSON schema; the match score is then computed in code, so it’s consistent and explainable.',
-        'Prepares each strong match overnight: answers from a profile I fill in once, drafted answers to open questions, a tailored resume and a cover letter, with unsupported claims flagged.',
+        'Prepares each strong match overnight: answers from a profile I fill in once, drafted answers to open questions, a two-page tailored resume in my own words and a cover letter, with unsupported claims flagged. An “Additional” skills line adds the posting’s exact terms for skills my resume already shows, because applicant tracking systems match words as written; it never adds a skill I don’t have.',
         'Checks every application against employers’ hiring rules first: duplicates, per-company caps, cooldowns after rejections, graduation windows and AI-use policies.',
         'I review each one in the panel and approve with one key or a swipe. Only approved applications are filled and submitted, by a userscript in my own browser, and an exact copy of what was sent is kept.',
-        'Reads a dedicated inbox (read-only) to track confirmations, assessments, interviews and rejections, and writes a weekly report with the numbers behind every suggestion.',
+        'Reads a dedicated inbox (read-only) to track confirmations, assessments, interviews and rejections, including applications I send myself outside the agent, and writes a weekly report with the numbers behind every suggestion.',
+        'Auto mode learns from my own approve and skip decisions which jobs I always pass on and skips them for me, holds jobs past my three-roles-in-30-days company cap until they can go out, and sends a to-do list at 6 p.m. It never approves, submits or sends anything.',
+        'Looks after its own hardware: a heat guard pauses AI work if the CPU stays at 90°C for a minute, a Cool down button pauses it on demand, and charger, battery, disk and downtime alerts reach my phone.',
       ],
     },
     {
@@ -264,7 +266,7 @@ export const jobAgent = {
       points: [
         'Python and FastAPI on Ubuntu Server, on a laptop with an Intel Core i3 and 16 GB of RAM. Qwen3 4B and 8B run on the CPU through Ollama.',
         'Benchmarks drove the design: CPU-bound generation made prompt size the main cost, so prompts are short and stable for Ollama’s cache. A 1,011-token step went from ~30 s of prompt processing to 1.7 s.',
-        'A keyboard-first web panel in plain HTML, CSS and JavaScript: three panes on a laptop, stacked on a phone, with ETag caching so unchanged lists cost a 304.',
+        'A keyboard-first web panel in plain HTML, CSS and JavaScript, styled like a Mission: Impossible HUD: three panes on a laptop, stacked on a phone, one key per decision, and ETag caching so unchanged lists cost a 304.',
         'Deploys itself: a systemd timer pulls from GitHub, checks syntax, backs up the running version and rolls back automatically if the health check fails.',
       ],
     },
@@ -283,6 +285,8 @@ export const jobAgent = {
     { src: `${JA}applications.jpg`, alt: 'An application timeline from approval to interview request', caption: 'Every application keeps a timeline and an exact copy of what was sent.' },
     { src: `${JA}insights.jpg`, alt: 'Weekly report with suggestions and a jobs-per-day chart', caption: 'The weekly report. No model writes it; every suggestion shows its numbers.' },
     { src: `${JA}inbox.jpg`, alt: 'Inbox with an assessment and a live deadline countdown', caption: 'Replies sorted by a local model, with live deadline countdowns.' },
+    { src: `${JA}auto.jpg`, alt: 'Auto mode settings: what it learned from my decisions and the patterns it skips on its own', caption: 'Auto mode: what it learned from my decisions, and the kinds of job it now skips for me.' },
+    { src: `${JA}heat.jpg`, alt: 'The nightly search card with the CPU temperature and a Cool down button', caption: 'The nightly search, with the CPU temperature and a Cool down button.' },
   ],
   phones: [
     { src: `${JA}phone-home.jpg`, alt: 'Home screen on a phone' },
