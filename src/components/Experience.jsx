@@ -14,7 +14,7 @@ export default function Experience() {
     >
       <div className="timeline">
         {experience.map((job, i) => (
-          <article className="timeline-item" key={job.company} style={{ '--d': `${i * 180}ms` }}>
+          <article className="timeline-item" key={job.company + job.role} style={{ '--d': `${i * 180}ms` }}>
             <div className="timeline-marker" />
             <div className="timeline-body">
               <div className="timeline-head">

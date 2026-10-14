@@ -14,14 +14,14 @@ export const profile = {
   shortName: 'Sai Satwik',
   role: 'Software Engineer',
   typedRoles: [
-    'Full-Stack Developer',
-    'ML / Computer Vision Engineer',
+    'Full Stack Developer',
+    'AI Engineer (LLM Applications)',
     'Backend Developer',
   ],
   tagline:
-    'Software Engineer with full-stack knowledge, building production-grade software applications with AI/ML capabilities.',
+    'Software Engineer building full-stack web applications, RESTful APIs and AI agent systems.',
   location: 'Albany, NY',
-  email: 'bikumandlasaisatwik@gmail.com',
+  email: 'ssbikumandla@gmail.com',
   phone: '+1 518 614 1904',
   resume: '/Sai_Satwik_Bikumandla_Resume.pdf',
 }
@@ -48,14 +48,14 @@ export const heroBadges = [
 
 export const about = {
   paragraphs: [
-    "I'm a software engineer and Master's student in Computer Science at the University at Albany (SUNY), based in Albany, NY. I build production-grade systems end to end — comfortable across the frontend, backend, and machine-learning layers of a product.",
-    "I've shipped a version-controlled resume platform with a dual-render LaTeX pipeline, a real-time tennis ball detection and tracking system, and a cloud-secured relational database on Google Cloud SQL. The computer-vision thread goes back further — my final-year undergrad research on emotion-responsive music was peer-reviewed and published in IJET in 2024, with me as first author. I'm driven by project-based learning and turning fuzzy, real-world problems into software people can actually use.",
+    "I'm a software engineer based in Albany, NY, with an M.S. in Computer Science from the University at Albany (SUNY, May 2026). I build full-stack web applications, RESTful APIs and AI agent systems, and I'm currently a Software Development Intern at EcoServants, building the Final-Email Preflight Validator for GreenSend.",
+    "My biggest project is a self-hosted AI agent that runs my job search on a spare laptop: local LLMs read ~13,000 postings a night, and I approve every application it prepares. I've also shipped a version-controlled resume platform with a dual-render LaTeX pipeline, a real-time tennis ball tracking system and a cloud relational database on Google Cloud SQL. The machine-learning thread goes back further: my final-year undergrad research on emotion-responsive music was peer-reviewed and published in IJET in 2024, with me as first author.",
   ],
   highlights: [
-    { value: '6+', label: 'Shipped Projects' },
+    { value: '9', label: 'Shipped Projects' },
     { value: '3', label: 'Layers: FE · BE · ML' },
     { value: '1', label: 'Peer-Reviewed Paper' },
-    { value: '2026', label: 'MS CS Graduation' },
+    { value: '2026', label: 'M.S. CS, UAlbany' },
   ],
 }
 
@@ -70,6 +70,9 @@ export const skillGroups = [
       { name: 'TypeScript', icon: ICON('typescript/typescript-original') },
       { name: 'Java', icon: ICON('java/java-original') },
       { name: 'C++', icon: ICON('cplusplus/cplusplus-original') },
+      { name: 'SQL', icon: ICON('azuresqldatabase/azuresqldatabase-original') },
+      { name: 'PHP', icon: ICON('php/php-original') },
+      { name: 'Bash', icon: ICON('bash/bash-original') },
     ],
   },
   {
@@ -79,6 +82,23 @@ export const skillGroups = [
       { name: 'Next.js', icon: ICON('nextjs/nextjs-original') },
       { name: 'Node.js', icon: ICON('nodejs/nodejs-original') },
       { name: 'Flask', icon: ICON('flask/flask-original') },
+      { name: 'FastAPI', icon: ICON('fastapi/fastapi-original') },
+      { name: 'Tailwind CSS', icon: ICON('tailwindcss/tailwindcss-original') },
+      { name: 'Zod' },
+      { name: 'Spring Boot (in progress)', icon: ICON('spring/spring-original') },
+    ],
+  },
+  {
+    title: 'AI & LLMs',
+    skills: [
+      { name: 'Ollama' },
+      { name: 'Qwen3' },
+      { name: 'Claude API' },
+      { name: 'Gemini API' },
+      { name: 'AI Agents & Tool Calling' },
+      { name: 'Structured Outputs' },
+      { name: 'Prompt Engineering' },
+      { name: 'Human-in-the-Loop' },
     ],
   },
   {
@@ -89,6 +109,7 @@ export const skillGroups = [
       { name: 'OpenCV', icon: ICON('opencv/opencv-original') },
       { name: 'NumPy', icon: ICON('numpy/numpy-original') },
       { name: 'Pandas', icon: ICON('pandas/pandas-original') },
+      { name: 'scikit-learn', icon: ICON('scikitlearn/scikitlearn-original') },
     ],
   },
   {
@@ -105,6 +126,9 @@ export const skillGroups = [
     skills: [
       { name: 'Docker', icon: ICON('docker/docker-original') },
       { name: 'Kubernetes', icon: ICON('kubernetes/kubernetes-original') },
+      { name: 'Linux', icon: ICON('linux/linux-original') },
+      { name: 'Vercel', icon: ICON('vercel/vercel-original') },
+      { name: 'systemd' },
       { name: 'CI/CD' },
       { name: 'Microservices' },
       { name: 'System Design' },
@@ -212,6 +236,16 @@ export const projects = [
       'A fully normalized MySQL schema (E-R → DDL) spanning 10+ entities with CHECK constraints, triggers, and referential integrity. Deployed on Google Cloud SQL with role-based access control and a JWT-authenticated backend, optimized with indexed multi-table JOINs.',
     tags: ['MySQL', 'Google Cloud SQL', 'JWT', 'Schema Design'],
     private: true,
+  },
+  {
+    title: 'Web Security Threat Scanner',
+    subtitle: 'Website Security Analysis Tool',
+    year: '2025',
+    category: 'Security',
+    description:
+      'A Computer Security course project built with a teammate: it scrapes a site’s headers, forms, scripts and SSL certificate, then scores its risk across 13 weighted security categories, including phishing signs and vulnerabilities. I built the threat detection and analysis.',
+    tags: ['Python', 'Streamlit', 'Web Security', 'SSL/TLS'],
+    href: 'https://github.com/SaisatwikBiku/Web-Threat-Detection',
   },
   {
     title: 'Web Prototype Generator',
@@ -448,24 +482,52 @@ export const research = [
 
 export const experience = [
   {
-    role: 'Website Design Intern',
-    company: 'Rethink UX',
-    period: 'Oct 2022 – Dec 2022',
+    role: 'Software Development Intern',
+    company: 'EcoServants',
+    period: 'Oct 2026 – Present',
     points: [
-      'Designed and built client-facing website features in HTML, CSS, and JavaScript, taking assigned modules from requirements through delivery.',
-      'Implemented access-control logic to restrict page features by user role.',
-      'Wrote technical documentation for the features I built, making handoff easier for the team after the internship ended.',
-      'Participated in code reviews with senior engineers and incorporated feedback to meet production standards.',
+      'Developing the Final-Email Preflight Validator for GreenSend, an end-to-end assignment on the tech development team.',
+      'Reporting progress and blockers to the engineering supervisor in weekly tech development meetings.',
     ],
   },
   {
-    role: 'Programming Content Intern',
+    role: 'Technical Operations & Software Support Associate',
+    company: 'Real Craft Tech',
+    period: 'Mar 2024 – Jun 2024',
+    points: [
+      'Tracked 15+ concurrent technical and operational work items for a remote team, following blockers through resolution.',
+      'Translated leadership decisions and business requirements into 40+ actionable technical tasks with clear owners.',
+      'Documented 30+ processes, decisions and operational records in a shared knowledge base to speed up team handoffs.',
+    ],
+  },
+  {
+    role: 'Technical Customer Operations & Systems Support Executive',
+    company: 'Real Craft Tech',
+    period: 'Mar 2023 – Jul 2023',
+    points: [
+      'Provided technical support in 200+ customer interactions, diagnosing issues and writing them up as structured requirements.',
+      'Routed 150+ requests to the right technical or operational owner as the liaison between customers and internal teams.',
+      'Gathered requirements in direct customer conversations and converted 75+ requests into actionable tasks.',
+    ],
+  },
+  {
+    role: 'Web Development Intern',
+    company: 'Rethink UX',
+    period: 'Oct 2022 – Dec 2022',
+    points: [
+      'Developed 12+ client-facing website features with PHP, WordPress, JavaScript, HTML5 and CSS3, from requirements to release.',
+      'Implemented role-based access control (RBAC) across 3+ user roles to govern feature visibility and application behavior.',
+      'Debugged and resolved 25+ frontend and access-control defects, and took part in 15+ code reviews with senior engineers.',
+    ],
+  },
+  {
+    role: 'Programming & Technical Content Intern',
     company: 'StudyExperts',
     period: 'Jun 2022 – Aug 2022',
     points: [
-      'Created programming tutorials and technical knowledge-base articles covering Python, Java, and data structures, serving as self-service resources for the platform\'s users.',
-      'Wrote, tested, and debugged code examples across multiple languages to ensure published content was accurate and runnable.',
-      'Demonstrated that strong written communication and deep product understanding are force multipliers for small engineering teams — a lesson that informs how I document and advocate for my own projects.',
+      'Authored 25+ programming tutorials on Python, Java, data structures and algorithms for technical learners.',
+      'Developed 50+ runnable Python and Java code examples, testing and debugging every one before publication.',
+      'Reviewed 70+ technical articles for correctness, code quality, clarity and consistency.',
     ],
   },
 ]
