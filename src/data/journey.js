@@ -8,9 +8,9 @@
 // by moving a number rather than regenerating art.
 //
 // This file stays deliberately dumb: constants, and the eight chapters. Every
-// date and title in PLACES is quoted from the résumé and the internship /
-// experience letters, so the map stays factual even though the world is
-// stylised.
+// title in PLACES is the one on the résumé (Oct 2026), and every date and quote
+// comes from the internship / experience letters, so the map stays factual even
+// though the world is stylised.
 
 export const WORLD = { w: 2500, h: 1500 }
 
@@ -59,7 +59,7 @@ export const PLACES = [
     landmark: 'archgate',
     name: 'StudyExperts',
     org: 'Mohan Garden, Uttam Nagar',
-    role: 'Programming Content Intern',
+    role: 'Programming & Technical Content Intern',
     period: 'Jun 2022 – Aug 2022 · 3 months',
     place: 'New Delhi, India',
     notes: [
@@ -79,11 +79,11 @@ export const PLACES = [
     landmark: 'studio',
     name: 'Rethink UX',
     org: 'Sector 37-D',
-    role: 'Website Design Intern',
+    role: 'Web Development Intern',
     period: '11 Oct 2022 – 20 Dec 2022',
     place: 'Chandigarh, India',
     notes: [
-      'Built client-facing website features in HTML, CSS, and JavaScript, owning assigned modules from requirements through delivery.',
+      'Built client-facing website features with PHP, WordPress, JavaScript, HTML and CSS, owning assigned modules from requirements through release.',
       'Implemented role-based access-control logic so page features unlocked per user role.',
       'First real code reviews with senior engineers — feedback taken and shipped to production standard.',
       'The certificate notes "always been enthusiastic about new learning opportunities" and attendance above 75%.',
@@ -92,7 +92,7 @@ export const PLACES = [
   {
     id: 'real-craft-1',
     city: 'Chandigarh',
-    short: 'Real Craft · Ops',
+    short: 'Real Craft · Support',
     x: 900, y: 430,
     chapter: '04',
     kind: 'work',
@@ -100,11 +100,12 @@ export const PLACES = [
     landmark: 'tower',
     name: 'Real Craft Tech',
     org: 'Rethink UX’s parent company',
-    role: 'Customer Operations & Marketing Executive',
+    role: 'Technical Customer Operations & Systems Support Executive',
     period: '16 Mar 2023 – 13 Jul 2023 · 4 months',
     place: 'Chandigarh, India',
     notes: [
       'Invited back to the same company in a different seat — this time on the customer-facing side rather than the build side.',
+      'Technical support across 200+ customer conversations, turning each reported issue into a structured requirement the team could build from.',
       'Learning how the thing you ship is actually sold, supported, and explained to the person paying for it.',
       'The letter: "competent and active with sincerity and determination… has proven helpful in the company repeatedly."',
     ],
@@ -112,7 +113,7 @@ export const PLACES = [
   {
     id: 'real-craft-2',
     city: 'Chandigarh',
-    short: 'Real Craft · EA',
+    short: 'Real Craft · Tech Ops',
     x: 830, y: 800,
     chapter: '05',
     kind: 'work',
@@ -120,11 +121,12 @@ export const PLACES = [
     landmark: 'annex',
     name: 'Real Craft Tech',
     org: 'Third stint, same team',
-    role: 'Executive Assistant',
+    role: 'Technical Operations & Software Support Associate',
     period: '26 Mar 2024 – 30 Jun 2024 · 3 months, 4 days',
     place: 'Chandigarh, India',
     notes: [
       'Final semester of the B.Tech, back at Real Craft Tech for a third time — working directly with the CEO on operations.',
+      'Tracked the team’s technical and operational work and turned leadership decisions into 40+ technical tasks, each with a clear owner.',
       'Being asked back twice by the same company says more than any single title on this map.',
       'The B.Tech wrapped in April 2024; this stint closed at the end of June, and the visa paperwork was already in motion.',
     ],
@@ -164,8 +166,8 @@ export const PLACES = [
     place: 'Albany, New York, USA',
     notes: [
       'Coursework: Database Systems I, Operating Systems, Algorithms & Data Structures, Computer Security, Software Engineering, Artificial Intelligence, Computer Vision, Probability & Computing.',
-      'Where the projects on this site were built — the version-controlled resume platform, the tennis-ball tracker, MyDishDB on Google Cloud SQL.',
-      'Certified along the way: Building with the Claude API (Anthropic, Mar 2026) and Google AI Essentials (Jul 2026).',
+      'Where the projects on this site were built — the version-controlled resume platform, the tennis-ball tracker, MyDishDB on Google Cloud SQL, and the self-hosted AI agent that runs my job search.',
+      'Certified along the way: Building with the Claude API (Anthropic, Mar 2026), Google AI Essentials (Jul 2026) and Building AI Agents (LinkedIn Learning, Aug 2026).',
     ],
   },
   {
@@ -178,13 +180,14 @@ export const PLACES = [
     region: 'us',
     landmark: 'home',
     name: 'You Are Here',
-    org: 'Albany, NY',
-    role: 'Software Engineer — open to work',
-    period: '2026 →',
+    org: 'Albany, NY · EcoServants (remote)',
+    role: 'Software Development Intern — open to full-time roles',
+    period: 'Oct 2026 →',
     place: 'Albany, New York, USA',
     notes: [
-      'Master’s in hand, full-stack across frontend, backend, and the ML layer, and a habit of ramping fast on whatever the problem needs.',
-      'Four cities, five organizations, one very long flight. The next marker on this map has not been placed yet.',
+      'Master’s in hand (May 2026), and now a Software Development Intern at EcoServants, building the Final-Email Preflight Validator for GreenSend on the tech development team.',
+      'Full-stack across frontend, backend and the AI layer, with a self-hosted AI agent running my job search on the side, and open to full-time software engineering roles.',
+      'Four cities, six organizations, one very long flight. The next marker on this map has not been placed yet.',
     ],
     cta: true,
   },

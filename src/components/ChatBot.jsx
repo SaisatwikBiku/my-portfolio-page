@@ -67,7 +67,7 @@ export default function ChatBot() {
         ...m,
         {
           role: 'model',
-          text: "Sorry — I couldn't reach my brain just now. Please try again, or email Sai directly at bikumandlasaisatwik@gmail.com.",
+          text: "Sorry — I couldn't reach my brain just now. Please try again, or email Sai directly at ssbikumandla@gmail.com.",
           error: true,
         },
       ])
