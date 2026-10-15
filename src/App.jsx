@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage.jsx'
 import AboutPage from './pages/AboutPage.jsx'
 import WorkPage from './pages/WorkPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
+import BlogPage from './pages/BlogPage.jsx'
+import BlogPostPage from './pages/BlogPostPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import About from './components/About.jsx'
 import Skills from './components/Skills.jsx'
@@ -52,6 +54,8 @@ export default function App() {
             </Suspense>
           }
         />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

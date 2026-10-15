@@ -13,6 +13,7 @@ background, skills, projects, published research, and work history as a software
 | `/about` | About me · Skills · Education, certifications & languages |
 | `/work` | Projects · Research (peer-reviewed publication) · Experience |
 | `/journey` | The playable map — my résumé as a small top-down world |
+| `/blog` | Blog index with tag filters; posts live at `/blog/<slug>` |
 | `/contact` | Contact form and links |
 
 Pages hand off to the next one in order, so the site still reads as one narrative.
@@ -103,6 +104,8 @@ src/
   components/           Sections (About, Projects, Research, …) + chrome (Header, Layout)
   data/portfolio.js     Single source of truth for site content
   data/journey.js       The Journey's chapters, coordinates and roads
+  data/blog.js          Loads, sorts and renders the Markdown blog posts
+  content/blog/         Blog posts, one Markdown file each
   lib/                  Journey world generation and canvas painting
   hooks/                useReveal, useTyped, useScrollSpy, useCountUp, usePageTitle
   styles/index.css      Global design system & styles
@@ -114,6 +117,15 @@ vercel.json             SPA rewrites so deep links resolve (excludes /api)
 To update content (projects, research, experience, skills, links), edit
 [`src/data/portfolio.js`](src/data/portfolio.js); for the map's chapters, edit
 [`src/data/journey.js`](src/data/journey.js). Neither needs component changes.
+
+## Writing a blog post
+
+Copy [`src/content/blog/_template.md`](src/content/blog/_template.md) to a new
+file such as `src/content/blog/2026-10-15-my-post.md`, fill in the header, and
+write the post in Markdown below it. The URL is the filename minus the date
+prefix (`/blog/my-post`). Posts with `draft: true` appear under `npm run dev`
+only. Images go in `public/blog/<slug>/`. The build also writes `/rss.xml`
+from the published posts.
 
 ## Deployment
 
