@@ -563,6 +563,7 @@ export const navLinks = [
   { label: 'About', to: '/about' },
   { label: 'Work', to: '/work' },
   { label: 'Journey', to: '/journey' },
+  { label: 'Blog', to: '/blog' },
   { label: 'Contact', to: '/contact' },
 ]
 
