@@ -98,6 +98,7 @@ chatbot and email verification behave the same locally as in production.
 ```
 api/chat.js             Serverless chatbot endpoint (Gemini; key stays server-side)
 api/otp.js              Serverless contact-form email verification (passcode never hits the client)
+api/admin.js            Serverless backend for the blog editor (sign-in, GitHub commits)
 public/                 Static assets (images, walker sprite, résumé PDF)
 src/
   pages/                One component per route
@@ -105,6 +106,7 @@ src/
   data/portfolio.js     Single source of truth for site content
   data/journey.js       The Journey's chapters, coordinates and roads
   data/blog.js          Loads, sorts and renders the Markdown blog posts
+  admin/                The /admin blog editor (loaded only on that route)
   content/blog/         Blog posts, one Markdown file each
   lib/                  Journey world generation and canvas painting
   hooks/                useReveal, useTyped, useScrollSpy, useCountUp, usePageTitle
@@ -120,7 +122,42 @@ To update content (projects, research, experience, skills, links), edit
 
 ## Writing a blog post
 
-Copy [`src/content/blog/_template.md`](src/content/blog/_template.md) to a new
+The easiest way is the editor at [`/admin`](https://satwik.info/admin). It
+signs in with a one-time code emailed to `ADMIN_EMAIL`, so only that inbox can
+get in. The editor has a Markdown toolbar, a live preview, image upload (paste
+or drop works too) and local autosave. Save draft keeps the post private,
+Publish commits it to `src/content/blog/` on `main`, and Vercel redeploys the
+site in a minute or two.
+
+The editor commits through the GitHub API, so it needs a few more variables in
+Vercel (alongside `OTP_SECRET` and the EmailJS ones above, which sign-in
+reuses):
+
+```bash
+# The only address that can sign in.
+ADMIN_EMAIL=you@example.com
+
+# Fine-grained personal access token (github.com → Settings → Developer
+# settings → Fine-grained tokens) with Contents: Read and write on this repo
+# and on the drafts repo.
+GITHUB_TOKEN=github_pat_xxx
+
+# A private repo for drafts, e.g. SaisatwikBiku/blog-drafts (create it with a
+# README so it has a main branch). This repo is public, so without this,
+# drafts are committed here with `draft: true` and anyone can read them on GitHub.
+DRAFTS_REPO=SaisatwikBiku/blog-drafts
+
+# Optional overrides (defaults shown).
+GITHUB_REPO=SaisatwikBiku/my-portfolio-page
+GITHUB_BRANCH=main
+DRAFTS_BRANCH=main
+```
+
+Uploaded images go to `public/blog/<slug>/` in this repo. Changing `OTP_SECRET`
+or `ADMIN_EMAIL` signs out every session.
+
+You can also write posts by hand: copy
+[`src/content/blog/_template.md`](src/content/blog/_template.md) to a new
 file such as `src/content/blog/2026-10-15-my-post.md`, fill in the header, and
 write the post in Markdown below it. The URL is the filename minus the date
 prefix (`/blog/my-post`). Posts with `draft: true` appear under `npm run dev`

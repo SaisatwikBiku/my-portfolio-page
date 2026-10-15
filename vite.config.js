@@ -4,10 +4,10 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { parseFrontmatter, slugFromPath } from './src/lib/frontmatter.js'
 import { profile, site } from './src/data/portfolio.js'
 
-// Mounts the Vercel serverless functions during local dev, so the chatbot and
-// the contact form's email verification work under `npm run dev` exactly as
+// Mounts the Vercel serverless functions during local dev, so the chatbot, the
+// contact form's email verification and the blog editor work under `npm run dev` exactly as
 // they do in production.
-const API_ROUTES = ['chat', 'otp']
+const API_ROUTES = ['chat', 'otp', 'admin']
 
 function localApiRoutes(env) {
   return {

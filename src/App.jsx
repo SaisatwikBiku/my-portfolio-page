@@ -22,6 +22,8 @@ import JobAgentIncident from './components/JobAgentIncident.jsx'
 // own it can be split out, so the other four pages never download it — same
 // treatment Hero3D already gets in Home.jsx.
 const JourneyPage = lazy(() => import('./pages/JourneyPage.jsx'))
+// The blog editor is for the site owner only, so it gets its own chunk too.
+const AdminApp = lazy(() => import('./admin/AdminApp.jsx'))
 
 // Site order tells a story: who I am → what I work with → what I've built
 // (proof first) → walk the route → say hi. Each page below is one chapter;
@@ -29,6 +31,14 @@ const JourneyPage = lazy(() => import('./pages/JourneyPage.jsx'))
 export default function App() {
   return (
     <Routes>
+      <Route
+        path="/admin/*"
+        element={
+          <Suspense fallback={<div className="route-loading" />}>
+            <AdminApp />
+          </Suspense>
+        }
+      />
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         {/* About and Work are tab shells: the shell renders the tab strip and
