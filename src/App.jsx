@@ -16,6 +16,7 @@ import Research from './components/Research.jsx'
 import Experience from './components/Experience.jsx'
 import JobAgent from './components/JobAgent.jsx'
 import JobAgentIncident from './components/JobAgentIncident.jsx'
+import { AdminBaseContext, useAdminGate } from './lib/adminGate.js'
 
 // The Journey drags in the procedural world generator and its ~1,300-line
 // painter, which nothing else on the site uses. Now that it has a route of its
@@ -29,16 +30,28 @@ const AdminApp = lazy(() => import('./admin/AdminApp.jsx'))
 // (proof first) → walk the route → say hi. Each page below is one chapter;
 // Layout is the chrome that stays put while the chapters change.
 export default function App() {
+  // The blog editor lives at a secret path; see lib/adminGate.js.
+  const adminBase = useAdminGate()
+  if (adminBase === undefined) return null
+  if (adminBase) {
+    return (
+      <AdminBaseContext.Provider value={adminBase}>
+        <Routes>
+          <Route
+            path={`${adminBase}/*`}
+            element={
+              <Suspense fallback={<div className="route-loading" />}>
+                <AdminApp />
+              </Suspense>
+            }
+          />
+        </Routes>
+      </AdminBaseContext.Provider>
+    )
+  }
+
   return (
     <Routes>
-      <Route
-        path="/admin/*"
-        element={
-          <Suspense fallback={<div className="route-loading" />}>
-            <AdminApp />
-          </Suspense>
-        }
-      />
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         {/* About and Work are tab shells: the shell renders the tab strip and

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { marked } from 'marked'
 import { AdminError, adminCall, prepareImage } from './api.js'
+import { useAdminBase } from '../lib/adminGate.js'
 import { FORMATS, SHORTCUTS, insertImage } from './markdown.js'
 import { SLUG_RE, readingMinutes, slugify } from '../lib/frontmatter.js'
 
@@ -61,6 +62,7 @@ const storage = {
 export default function PostEditor({ onSignedOut }) {
   const [params] = useSearchParams()
   const navigate = useNavigate()
+  const base = useAdminBase()
   const editing = params.get('path') ? { store: params.get('store'), path: params.get('path') } : null
 
   const [post, setPost] = useState(emptyPost)
@@ -176,7 +178,7 @@ export default function PostEditor({ onSignedOut }) {
       const nextKey = `${saved.store}:${saved.path}`
       if (nextKey !== key) {
         loadedKey.current = nextKey
-        navigate(`/admin/edit?store=${saved.store}&path=${encodeURIComponent(saved.path)}`, { replace: true })
+        navigate(`${base}/edit?store=${saved.store}&path=${encodeURIComponent(saved.path)}`, { replace: true })
       }
       setNotice({
         kind: 'ok',
@@ -318,7 +320,7 @@ export default function PostEditor({ onSignedOut }) {
     return (
       <div className="admin-center">
         <p className="admin-error">{loadError}</p>
-        <Link to="/admin">Back to posts</Link>
+        <Link to={base}>Back to posts</Link>
       </div>
     )
   }
@@ -332,7 +334,7 @@ export default function PostEditor({ onSignedOut }) {
   return (
     <div className="admin-editor">
       <header className="admin-editor-bar">
-        <Link to="/admin" className="admin-link" onClick={leave}>
+        <Link to={base} className="admin-link" onClick={leave}>
           ← Posts
         </Link>
         <span className={`admin-pill ${isPublished ? 'admin-pill--live' : 'admin-pill--draft'}`}>

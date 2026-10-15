@@ -1,4 +1,4 @@
-/* Blog editor (/admin). Built on the site's tokens so light/dark mode carry
+/* Blog editor (served at the secret ADMIN_PATH). Built on the site's tokens so light/dark mode carry
    over; the preview reuses the real .post-body styles from index.css, so what
    you see is what the post page renders. */
 

@@ -106,7 +106,8 @@ src/
   data/portfolio.js     Single source of truth for site content
   data/journey.js       The Journey's chapters, coordinates and roads
   data/blog.js          Loads, sorts and renders the Markdown blog posts
-  admin/                The /admin blog editor (loaded only on that route)
+  admin/                The blog editor (served only at the secret ADMIN_PATH)
+  lib/adminGate.js      Matches the URL against the hashed ADMIN_PATH
   content/blog/         Blog posts, one Markdown file each
   lib/                  Journey world generation and canvas painting
   hooks/                useReveal, useTyped, useScrollSpy, useCountUp, usePageTitle
@@ -122,18 +123,30 @@ To update content (projects, research, experience, skills, links), edit
 
 ## Writing a blog post
 
-The easiest way is the editor at [`/admin`](https://satwik.info/admin). It
-signs in with a one-time code emailed to `ADMIN_EMAIL`, so only that inbox can
-get in. The editor has a Markdown toolbar, a live preview, image upload (paste
-or drop works too) and local autosave. Save draft keeps the post private,
-Publish commits it to `src/content/blog/` on `main`, and Vercel redeploys the
-site in a minute or two.
+The easiest way is the blog editor. It has no link anywhere on the site and no
+fixed URL: it lives at `https://satwik.info/<ADMIN_PATH>`, where `ADMIN_PATH`
+is a secret you set in Vercel. The build ships only a SHA-256 of that path, so
+it isn't in this repo or in the site's JavaScript; every other address,
+including `/admin`, shows the 404 page. Under `npm run dev` with no
+`ADMIN_PATH` set, the editor is at `/admin`.
+
+Hiding the URL only keeps the editor out of sight. What keeps people out is the
+sign-in: a one-time code emailed to `ADMIN_EMAIL`, so only that inbox can get
+in. The editor has a Markdown toolbar, a live preview, image upload (paste or
+drop works too) and local autosave. Save draft keeps the post private, Publish
+commits it to `src/content/blog/` on `main`, and Vercel redeploys the site in a
+minute or two.
 
 The editor commits through the GitHub API, so it needs a few more variables in
 Vercel (alongside `OTP_SECRET` and the EmailJS ones above, which sign-in
 reuses):
 
 ```bash
+# The editor's secret address: 16-64 letters, digits, - or _. Make it random,
+# e.g. `openssl rand -hex 12`. Builds without it ship with the editor off.
+# Changing it moves the editor (redeploy to apply).
+ADMIN_PATH=your-random-path
+
 # The only address that can sign in.
 ADMIN_EMAIL=you@example.com
 

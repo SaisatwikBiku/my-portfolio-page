@@ -7,19 +7,27 @@ import PostEditor from './PostEditor.jsx'
 import { usePageTitle } from '../hooks/usePageTitle.js'
 import './admin.css'
 
-// /admin, outside the site Layout: no header, chatbot or tour, just the tool.
-// Loaded lazily from App.jsx, so visitors never download the editor.
+// The editor, outside the site Layout: no header, chatbot or tour, just the
+// tool. App.jsx mounts it only at the secret path (lib/adminGate.js) and loads
+// it lazily, so visitors never download it.
 export default function AdminApp() {
   usePageTitle('Blog editor')
   const [session, setSession] = useState({ state: 'checking' })
 
-  // Keep the editor out of search results.
+  // Keep the editor out of search results, and keep its URL out of the
+  // Referer header when a link is followed from it.
   useEffect(() => {
-    const meta = document.createElement('meta')
-    meta.name = 'robots'
-    meta.content = 'noindex, nofollow'
-    document.head.appendChild(meta)
-    return () => meta.remove()
+    const metas = [
+      ['robots', 'noindex, nofollow'],
+      ['referrer', 'no-referrer'],
+    ].map(([name, content]) => {
+      const meta = document.createElement('meta')
+      meta.name = name
+      meta.content = content
+      document.head.appendChild(meta)
+      return meta
+    })
+    return () => metas.forEach((m) => m.remove())
   }, [])
 
   const check = useCallback(async () => {

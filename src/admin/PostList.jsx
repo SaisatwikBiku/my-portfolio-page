@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { adminCall } from './api.js'
+import { useAdminBase } from '../lib/adminGate.js'
 import { formatDate } from '../data/blog.js'
 
 const FILTERS = ['all', 'drafts', 'published']
 
 export default function PostList({ draftsPrivate, onSignedOut, onSignOut }) {
+  const base = useAdminBase()
   const [posts, setPosts] = useState(null)
   const [error, setError] = useState('')
   const [filter, setFilter] = useState('all')
@@ -60,7 +62,7 @@ export default function PostList({ draftsPrivate, onSignedOut, onSignOut }) {
           <button className="admin-link" onClick={onSignOut}>
             Sign out
           </button>
-          <Link className="btn btn--primary admin-btn" to="/admin/new">
+          <Link className="btn btn--primary admin-btn" to={`${base}/new`}>
             New post
           </Link>
         </div>
@@ -96,7 +98,7 @@ export default function PostList({ draftsPrivate, onSignedOut, onSignOut }) {
       {posts && shown.length === 0 && (
         <p className="admin-empty">
           {filter === 'all' ? 'No posts yet. ' : `No ${filter} posts. `}
-          <Link to="/admin/new">Write one</Link>
+          <Link to={`${base}/new`}>Write one</Link>
         </p>
       )}
 
@@ -105,7 +107,7 @@ export default function PostList({ draftsPrivate, onSignedOut, onSignOut }) {
           <li key={`${post.store}:${post.path}`} className="admin-post">
             <Link
               className="admin-post-main"
-              to={`/admin/edit?store=${post.store}&path=${encodeURIComponent(post.path)}`}
+              to={`${base}/edit?store=${post.store}&path=${encodeURIComponent(post.path)}`}
             >
               <span className={`admin-pill ${post.draft ? 'admin-pill--draft' : 'admin-pill--live'}`}>
                 {post.draft ? 'Draft' : 'Published'}

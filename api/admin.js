@@ -1,4 +1,5 @@
-// Vercel serverless function behind the blog editor at /admin.
+// Vercel serverless function behind the blog editor (served at the secret
+// ADMIN_PATH; see src/lib/adminGate.js).
 //
 // Sign-in: the only way in is a passcode mailed to ADMIN_EMAIL. The address is
 // fixed here on the server, never taken from the request, so nobody else can
