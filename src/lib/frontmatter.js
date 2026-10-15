@@ -56,3 +56,31 @@ export function readingMinutes(body) {
   const words = body.trim().split(/\s+/).filter(Boolean).length
   return Math.max(1, Math.round(words / 220))
 }
+
+// The inverse of parseFrontmatter, used by the admin editor to write a post
+// back to disk. Strings are always double-quoted so a title containing ": "
+// or starting with "[" can't be misread as another type; newlines are flattened
+// because the parser reads one line per field.
+export function stringifyPost({ title, date, summary, tags = [], cover, draft }, body) {
+  const str = (v) => `"${String(v ?? '').replace(/\s*\r?\n\s*/g, ' ').trim()}"`
+  const lines = [`title: ${str(title)}`, `date: ${date}`]
+  if (summary) lines.push(`summary: ${str(summary)}`)
+  if (tags.length) lines.push(`tags: [${tags.join(', ')}]`)
+  if (cover) lines.push(`cover: ${str(cover)}`)
+  if (draft) lines.push('draft: true')
+  return `---\n${lines.join('\n')}\n---\n\n${String(body ?? '').replace(/^(\s*\n)+/, '').trimEnd()}\n`
+}
+
+// "Hello, World: Part 2!" → "hello-world-part-2"
+export function slugify(text) {
+  return String(text ?? '')
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+}
+
+export const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+export const TAG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/

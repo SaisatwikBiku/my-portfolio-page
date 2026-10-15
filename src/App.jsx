@@ -16,17 +16,40 @@ import Research from './components/Research.jsx'
 import Experience from './components/Experience.jsx'
 import JobAgent from './components/JobAgent.jsx'
 import JobAgentIncident from './components/JobAgentIncident.jsx'
+import { AdminBaseContext, useAdminGate } from './lib/adminGate.js'
 
 // The Journey drags in the procedural world generator and its ~1,300-line
 // painter, which nothing else on the site uses. Now that it has a route of its
 // own it can be split out, so the other four pages never download it — same
 // treatment Hero3D already gets in Home.jsx.
 const JourneyPage = lazy(() => import('./pages/JourneyPage.jsx'))
+// The blog editor is for the site owner only, so it gets its own chunk too.
+const AdminApp = lazy(() => import('./admin/AdminApp.jsx'))
 
 // Site order tells a story: who I am → what I work with → what I've built
 // (proof first) → walk the route → say hi. Each page below is one chapter;
 // Layout is the chrome that stays put while the chapters change.
 export default function App() {
+  // The blog editor lives at a secret path; see lib/adminGate.js.
+  const adminBase = useAdminGate()
+  if (adminBase === undefined) return null
+  if (adminBase) {
+    return (
+      <AdminBaseContext.Provider value={adminBase}>
+        <Routes>
+          <Route
+            path={`${adminBase}/*`}
+            element={
+              <Suspense fallback={<div className="route-loading" />}>
+                <AdminApp />
+              </Suspense>
+            }
+          />
+        </Routes>
+      </AdminBaseContext.Provider>
+    )
+  }
+
   return (
     <Routes>
       <Route element={<Layout />}>
